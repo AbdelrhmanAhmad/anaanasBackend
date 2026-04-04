@@ -1,0 +1,4071 @@
+[
+    {
+        "id": "3",
+        "name": {
+            "en": "Algeria",
+            "ar": "الجزائر"
+        },
+        "iso2": "DZ",
+        "iso_code": "DZ",
+        "cities": [
+            {
+                "id": "251",
+                "country_id": "3",
+                "name": {
+                    "en": "Adrar",
+                    "ar": "أدرار"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "285",
+                "country_id": "3",
+                "name": {
+                    "en": "Ain Defla",
+                    "ar": "عين الدفلى"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "287",
+                "country_id": "3",
+                "name": {
+                    "en": "Ain Techmoshent",
+                    "ar": "عين تموشنت"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "252",
+                "country_id": "3",
+                "name": {
+                    "en": "Al-Aghwat",
+                    "ar": "الاغواط"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "243",
+                "country_id": "3",
+                "name": {
+                    "en": "Algeria",
+                    "ar": "الجزائر"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "275",
+                "country_id": "3",
+                "name": {
+                    "en": "Allizi",
+                    "ar": "اليزي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "247",
+                "country_id": "3",
+                "name": {
+                    "en": "Annaba",
+                    "ar": "عنابة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "248",
+                "country_id": "3",
+                "name": {
+                    "en": "Batna",
+                    "ar": "باتنة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "254",
+                "country_id": "3",
+                "name": {
+                    "en": "Bejaia",
+                    "ar": "بجاية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "256",
+                "country_id": "3",
+                "name": {
+                    "en": "Bishar",
+                    "ar": "بشار"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "255",
+                "country_id": "3",
+                "name": {
+                    "en": "Biskara",
+                    "ar": "بسكرة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "246",
+                "country_id": "3",
+                "name": {
+                    "en": "Blida",
+                    "ar": "البليدة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "257",
+                "country_id": "3",
+                "name": {
+                    "en": "Bouira",
+                    "ar": "البويرة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "276",
+                "country_id": "3",
+                "name": {
+                    "en": "Boumerdas",
+                    "ar": "بومرداس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "250",
+                "country_id": "3",
+                "name": {
+                    "en": "Chlef",
+                    "ar": "الشلف"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "245",
+                "country_id": "3",
+                "name": {
+                    "en": "Constantine",
+                    "ar": "قسنطينة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "263",
+                "country_id": "3",
+                "name": {
+                    "en": "Djelfa",
+                    "ar": "الجلفة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "269",
+                "country_id": "3",
+                "name": {
+                    "en": "El byadh",
+                    "ar": "البيض"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "280",
+                "country_id": "3",
+                "name": {
+                    "en": "El Oudi",
+                    "ar": "الوادي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "277",
+                "country_id": "3",
+                "name": {
+                    "en": "El Tarf",
+                    "ar": "الطارف"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "288",
+                "country_id": "3",
+                "name": {
+                    "en": "Ghardaia",
+                    "ar": "غرداية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "268",
+                "country_id": "3",
+                "name": {
+                    "en": "Guilma",
+                    "ar": "قالمة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "264",
+                "country_id": "3",
+                "name": {
+                    "en": "Jejil",
+                    "ar": "جيجل"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "281",
+                "country_id": "3",
+                "name": {
+                    "en": "Khenchala",
+                    "ar": "خنشلة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "273",
+                "country_id": "3",
+                "name": {
+                    "en": "Mascara",
+                    "ar": "معسكر"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "270",
+                "country_id": "3",
+                "name": {
+                    "en": "Medea",
+                    "ar": "المدية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "284",
+                "country_id": "3",
+                "name": {
+                    "en": "Mila",
+                    "ar": "ميلة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "272",
+                "country_id": "3",
+                "name": {
+                    "en": "Misila",
+                    "ar": "المسيلة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "271",
+                "country_id": "3",
+                "name": {
+                    "en": "Mostaganem",
+                    "ar": "مستغانم"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "286",
+                "country_id": "3",
+                "name": {
+                    "en": "Naama",
+                    "ar": "النعامة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "244",
+                "country_id": "3",
+                "name": {
+                    "en": "Oran",
+                    "ar": "وهران"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "253",
+                "country_id": "3",
+                "name": {
+                    "en": "Oum Alboaki",
+                    "ar": "أم البواقي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "274",
+                "country_id": "3",
+                "name": {
+                    "en": "Ourgala",
+                    "ar": "ورقلة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "289",
+                "country_id": "3",
+                "name": {
+                    "en": "Relizane",
+                    "ar": "غليزان"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "265",
+                "country_id": "3",
+                "name": {
+                    "en": "Saida",
+                    "ar": "سعيدة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "267",
+                "country_id": "3",
+                "name": {
+                    "en": "Sedi bIl Abas",
+                    "ar": "سيدي بلعباس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "249",
+                "country_id": "3",
+                "name": {
+                    "en": "Setif",
+                    "ar": "سطيف"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "266",
+                "country_id": "3",
+                "name": {
+                    "en": "Skikda",
+                    "ar": "سكيكدة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "282",
+                "country_id": "3",
+                "name": {
+                    "en": "Souk Ahras",
+                    "ar": "سوق اهراس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "258",
+                "country_id": "3",
+                "name": {
+                    "en": "Tammenraset",
+                    "ar": "تمنراست"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "259",
+                "country_id": "3",
+                "name": {
+                    "en": "Tebbesa",
+                    "ar": "تبسة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "261",
+                "country_id": "3",
+                "name": {
+                    "en": "Tiaret",
+                    "ar": "تيارت"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "278",
+                "country_id": "3",
+                "name": {
+                    "en": "Tinduf",
+                    "ar": "تندوف"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "283",
+                "country_id": "3",
+                "name": {
+                    "en": "Tipasa",
+                    "ar": "تيبازة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "279",
+                "country_id": "3",
+                "name": {
+                    "en": "Tismessilt",
+                    "ar": "تسمسيلت"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "262",
+                "country_id": "3",
+                "name": {
+                    "en": "Tizi Ouzou",
+                    "ar": "تيزي وزو"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "260",
+                "country_id": "3",
+                "name": {
+                    "en": "Tlemcen",
+                    "ar": "تلمسان"
+                },
+                "index_order": "100"
+            }
+        ]
+    },
+    {
+        "id": "17",
+        "name": {
+            "en": "Bahrain",
+            "ar": "البحرين"
+        },
+        "iso2": "BH",
+        "iso_code": "BH",
+        "cities": []
+    },
+    {
+        "id": "62",
+        "name": {
+            "en": "Egypt",
+            "ar": "مصر"
+        },
+        "iso2": "EG",
+        "iso_code": "EG",
+        "cities": [
+            {
+                "id": "54",
+                "country_id": "62",
+                "name": {
+                    "en": "Alexandria",
+                    "ar": "الإسكندرية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "62",
+                "country_id": "62",
+                "name": {
+                    "en": "Assiut",
+                    "ar": "أسيوط"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "71",
+                "country_id": "62",
+                "name": {
+                    "en": "Aswan",
+                    "ar": "أسوان"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "82",
+                "country_id": "62",
+                "name": {
+                    "en": "Beheira",
+                    "ar": "البحيرة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "74",
+                "country_id": "62",
+                "name": {
+                    "en": "Beni Suef",
+                    "ar": "بني سويف"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "76",
+                "country_id": "62",
+                "name": {
+                    "en": "Dakahlia",
+                    "ar": "الدقهلية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "67",
+                "country_id": "62",
+                "name": {
+                    "en": "Damanhour",
+                    "ar": "دمنهور"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "69",
+                "country_id": "62",
+                "name": {
+                    "en": "Damietta",
+                    "ar": "دمياط"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "63",
+                "country_id": "62",
+                "name": {
+                    "en": "Fayoum",
+                    "ar": "الفيوم"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "80",
+                "country_id": "62",
+                "name": {
+                    "en": "Gharbia",
+                    "ar": "الغربية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "53",
+                "country_id": "62",
+                "name": {
+                    "en": "Giza",
+                    "ar": "الجيزة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "66",
+                "country_id": "62",
+                "name": {
+                    "en": "Hurghada",
+                    "ar": "الغردقة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "61",
+                "country_id": "62",
+                "name": {
+                    "en": "Ismailia",
+                    "ar": "الإسماعيلية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "73",
+                "country_id": "62",
+                "name": {
+                    "en": "Kafr El-Sheikh",
+                    "ar": "كفر الشيخ"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "68",
+                "country_id": "62",
+                "name": {
+                    "en": "Luxor",
+                    "ar": "الأقصر"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "55",
+                "country_id": "62",
+                "name": {
+                    "en": "Mansoura",
+                    "ar": "المنصورة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "56",
+                "country_id": "62",
+                "name": {
+                    "en": "Matruh",
+                    "ar": "مطروح"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "70",
+                "country_id": "62",
+                "name": {
+                    "en": "Minya",
+                    "ar": "المنيا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "65",
+                "country_id": "62",
+                "name": {
+                    "en": "Monufia",
+                    "ar": "المنوفية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "79",
+                "country_id": "62",
+                "name": {
+                    "en": "New Valley",
+                    "ar": "الوادي الجديد"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "77",
+                "country_id": "62",
+                "name": {
+                    "en": "Nourth Sinai",
+                    "ar": "شمال سيناء"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "60",
+                "country_id": "62",
+                "name": {
+                    "en": "Port Said",
+                    "ar": "بور سعيد"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "50",
+                "country_id": "62",
+                "name": {
+                    "en": "Qairo",
+                    "ar": "القاهرة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "64",
+                "country_id": "62",
+                "name": {
+                    "en": "Qalubia",
+                    "ar": "القليوبية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "75",
+                "country_id": "62",
+                "name": {
+                    "en": "Qena",
+                    "ar": "قنا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "83",
+                "country_id": "62",
+                "name": {
+                    "en": "Red Sea",
+                    "ar": "البحر الأحمر"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "81",
+                "country_id": "62",
+                "name": {
+                    "en": "Sharqia",
+                    "ar": "الشرقية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "72",
+                "country_id": "62",
+                "name": {
+                    "en": "Sohag",
+                    "ar": "سوهاج"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "78",
+                "country_id": "62",
+                "name": {
+                    "en": "South Sinai",
+                    "ar": "جنوب سيناء"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "57",
+                "country_id": "62",
+                "name": {
+                    "en": "Suez",
+                    "ar": "السويس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "58",
+                "country_id": "62",
+                "name": {
+                    "en": "Tanta",
+                    "ar": "طنطا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "59",
+                "country_id": "62",
+                "name": {
+                    "en": "Zagazig",
+                    "ar": "الزقازيق"
+                },
+                "index_order": "100"
+            }
+        ]
+    },
+    {
+        "id": "103",
+        "name": {
+            "en": "Iraq",
+            "ar": "العراق"
+        },
+        "iso2": "IQ",
+        "iso_code": "IQ",
+        "cities": [
+            {
+                "id": "136",
+                "country_id": "103",
+                "name": {
+                    "en": "Al Anbar",
+                    "ar": "الأنبار"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "127",
+                "country_id": "103",
+                "name": {
+                    "en": "Baghdad",
+                    "ar": "بغداد"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "128",
+                "country_id": "103",
+                "name": {
+                    "en": "Basra",
+                    "ar": "البصرة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "131",
+                "country_id": "103",
+                "name": {
+                    "en": "Dhi Qar",
+                    "ar": "ذي قار"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "139",
+                "country_id": "103",
+                "name": {
+                    "en": "Diyala",
+                    "ar": "ديالى"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "138",
+                "country_id": "103",
+                "name": {
+                    "en": "Dohuk",
+                    "ar": "دهوك"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "133",
+                "country_id": "103",
+                "name": {
+                    "en": "Erbil",
+                    "ar": "أربيل"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "130",
+                "country_id": "103",
+                "name": {
+                    "en": "Karbala",
+                    "ar": "كربلاء"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "137",
+                "country_id": "103",
+                "name": {
+                    "en": "Kirkuk",
+                    "ar": "كركوك"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "142",
+                "country_id": "103",
+                "name": {
+                    "en": "Maysan",
+                    "ar": "ميسان"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "132",
+                "country_id": "103",
+                "name": {
+                    "en": "Musol",
+                    "ar": "الموصل"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "141",
+                "country_id": "103",
+                "name": {
+                    "en": "Muthanna",
+                    "ar": "المثنى"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "129",
+                "country_id": "103",
+                "name": {
+                    "en": "Najaf",
+                    "ar": "النجف"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "140",
+                "country_id": "103",
+                "name": {
+                    "en": "Qadisiyah",
+                    "ar": "القادسية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "134",
+                "country_id": "103",
+                "name": {
+                    "en": "Saladin",
+                    "ar": "صلاح الدين"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "135",
+                "country_id": "103",
+                "name": {
+                    "en": "Sulaymaniyah",
+                    "ar": "السليمانية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "143",
+                "country_id": "103",
+                "name": {
+                    "en": "Wasit",
+                    "ar": "واسط"
+                },
+                "index_order": "100"
+            }
+        ]
+    },
+    {
+        "id": "111",
+        "name": {
+            "en": "Jordan",
+            "ar": "الأردن"
+        },
+        "iso2": "JO",
+        "iso_code": "JO",
+        "cities": [
+            {
+                "id": "16",
+                "country_id": "111",
+                "name": {
+                    "en": "Ajloun",
+                    "ar": "عجلون"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "8",
+                "country_id": "111",
+                "name": {
+                    "en": "Al Karak",
+                    "ar": "الكرك"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "1",
+                "country_id": "111",
+                "name": {
+                    "en": "Amman",
+                    "ar": "عمان"
+                },
+                "index_order": "1"
+            },
+            {
+                "id": "6",
+                "country_id": "111",
+                "name": {
+                    "en": "Aqaba",
+                    "ar": "العقبة"
+                },
+                "index_order": "4"
+            },
+            {
+                "id": "15",
+                "country_id": "111",
+                "name": {
+                    "en": "Azraq",
+                    "ar": "الأزرق"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "13",
+                "country_id": "111",
+                "name": {
+                    "en": "Dead Sea",
+                    "ar": "البحر الميت"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "3",
+                "country_id": "111",
+                "name": {
+                    "en": "Irbid",
+                    "ar": "إربد"
+                },
+                "index_order": "2"
+            },
+            {
+                "id": "7",
+                "country_id": "111",
+                "name": {
+                    "en": "Jerash",
+                    "ar": "جرش"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "9",
+                "country_id": "111",
+                "name": {
+                    "en": "Madaba",
+                    "ar": "مادبا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "4",
+                "country_id": "111",
+                "name": {
+                    "en": "Mafraq",
+                    "ar": "المفرق"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "14",
+                "country_id": "111",
+                "name": {
+                    "en": "Ma`an",
+                    "ar": "معان"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "10",
+                "country_id": "111",
+                "name": {
+                    "en": "Ramtha",
+                    "ar": "الرمثا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "12",
+                "country_id": "111",
+                "name": {
+                    "en": "Sahab",
+                    "ar": "سحاب"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "5",
+                "country_id": "111",
+                "name": {
+                    "en": "Salt",
+                    "ar": "السلط"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "11",
+                "country_id": "111",
+                "name": {
+                    "en": "Tafila",
+                    "ar": "الطفيلة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "2",
+                "country_id": "111",
+                "name": {
+                    "en": "Zarqa",
+                    "ar": "الزرقاء"
+                },
+                "index_order": "3"
+            }
+        ]
+    },
+    {
+        "id": "118",
+        "name": {
+            "en": "Kuwait",
+            "ar": "الكويت"
+        },
+        "iso2": "KW",
+        "iso_code": "KW",
+        "cities": [
+            {
+                "id": "147",
+                "country_id": "118",
+                "name": {
+                    "en": "Al Ahmadi",
+                    "ar": "الأحمدي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "144",
+                "country_id": "118",
+                "name": {
+                    "en": "Al Jahra",
+                    "ar": "الجهراء"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "145",
+                "country_id": "118",
+                "name": {
+                    "en": "Farwaniya",
+                    "ar": "الفروانية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "146",
+                "country_id": "118",
+                "name": {
+                    "en": "Hawally",
+                    "ar": "حولي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "148",
+                "country_id": "118",
+                "name": {
+                    "en": "Kuwait City",
+                    "ar": "مدينة الكويت"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "149",
+                "country_id": "118",
+                "name": {
+                    "en": "Mubarak Al-Kabeer",
+                    "ar": "مبارك الكبير"
+                },
+                "index_order": "100"
+            }
+        ]
+    },
+    {
+        "id": "122",
+        "name": {
+            "en": "Lebanon",
+            "ar": "لبنان"
+        },
+        "iso2": "LB",
+        "iso_code": "LB",
+        "cities": [
+            {
+                "id": "167",
+                "country_id": "122",
+                "name": {
+                    "en": "Akkar",
+                    "ar": "عكار"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "170",
+                "country_id": "122",
+                "name": {
+                    "en": "Baalbek",
+                    "ar": "بعلبك"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "161",
+                "country_id": "122",
+                "name": {
+                    "en": "Beirut",
+                    "ar": "بيروت"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "169",
+                "country_id": "122",
+                "name": {
+                    "en": "Bent Jbail",
+                    "ar": "بنت جبيل"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "165",
+                "country_id": "122",
+                "name": {
+                    "en": "Mount Lebanon",
+                    "ar": "جبل لبنان"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "163",
+                "country_id": "122",
+                "name": {
+                    "en": "Saida",
+                    "ar": "صيدا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "168",
+                "country_id": "122",
+                "name": {
+                    "en": "Sour",
+                    "ar": "صور"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "162",
+                "country_id": "122",
+                "name": {
+                    "en": "Tripoli",
+                    "ar": "طرابلس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "166",
+                "country_id": "122",
+                "name": {
+                    "en": "West Bekaa",
+                    "ar": "البقاع الغربي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "164",
+                "country_id": "122",
+                "name": {
+                    "en": "Zahle",
+                    "ar": "زحلة"
+                },
+                "index_order": "100"
+            }
+        ]
+    },
+    {
+        "id": "125",
+        "name": {
+            "en": "Libyan Arab Jamahiriya",
+            "ar": "الجماهيرية العربية الليبية"
+        },
+        "iso2": "LY",
+        "iso_code": "LY",
+        "cities": [
+            {
+                "id": "354",
+                "country_id": "125",
+                "name": {
+                    "en": "Abyar",
+                    "ar": "الأبيار"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "321",
+                "country_id": "125",
+                "name": {
+                    "en": "Ajdabya",
+                    "ar": "اجدابيا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "326",
+                "country_id": "125",
+                "name": {
+                    "en": "Al Quba",
+                    "ar": "القبة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "339",
+                "country_id": "125",
+                "name": {
+                    "en": "ALasabiaa",
+                    "ar": "الأصابعة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "316",
+                "country_id": "125",
+                "name": {
+                    "en": "Alkhums",
+                    "ar": "الخمس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "325",
+                "country_id": "125",
+                "name": {
+                    "en": "Alkufra",
+                    "ar": "الكفرة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "328",
+                "country_id": "125",
+                "name": {
+                    "en": "Almarj",
+                    "ar": "المرج"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "360",
+                "country_id": "125",
+                "name": {
+                    "en": "Almaya",
+                    "ar": "المايا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "345",
+                "country_id": "125",
+                "name": {
+                    "en": "Alwahat",
+                    "ar": "الواحات"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "355",
+                "country_id": "125",
+                "name": {
+                    "en": "Awjila",
+                    "ar": "أوجلة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "327",
+                "country_id": "125",
+                "name": {
+                    "en": "Bani Waleed",
+                    "ar": "بني وليد"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "335",
+                "country_id": "125",
+                "name": {
+                    "en": "Barega",
+                    "ar": "البريقة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "313",
+                "country_id": "125",
+                "name": {
+                    "en": "Benghazi",
+                    "ar": "بنغازي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "359",
+                "country_id": "125",
+                "name": {
+                    "en": "Brak",
+                    "ar": "براك"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "343",
+                "country_id": "125",
+                "name": {
+                    "en": "Butnan",
+                    "ar": "البطنان"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "322",
+                "country_id": "125",
+                "name": {
+                    "en": "Derna",
+                    "ar": "درنة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "362",
+                "country_id": "125",
+                "name": {
+                    "en": "Ghadames",
+                    "ar": "غدامس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "348",
+                "country_id": "125",
+                "name": {
+                    "en": "Ghat",
+                    "ar": "غات"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "319",
+                "country_id": "125",
+                "name": {
+                    "en": "Ghrayan",
+                    "ar": "غريان"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "336",
+                "country_id": "125",
+                "name": {
+                    "en": "Hun",
+                    "ar": "هون"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "350",
+                "country_id": "125",
+                "name": {
+                    "en": "Jafara",
+                    "ar": "الجفارة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "341",
+                "country_id": "125",
+                "name": {
+                    "en": "Jafra",
+                    "ar": "الجفرة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "337",
+                "country_id": "125",
+                "name": {
+                    "en": "Jalu",
+                    "ar": "جالو"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "344",
+                "country_id": "125",
+                "name": {
+                    "en": "Jbal alkhdar",
+                    "ar": "الجبل الأخضر"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "361",
+                "country_id": "125",
+                "name": {
+                    "en": "Jumayl",
+                    "ar": "جميل"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "356",
+                "country_id": "125",
+                "name": {
+                    "en": "Marada",
+                    "ar": "مردة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "314",
+                "country_id": "125",
+                "name": {
+                    "en": "Misrata",
+                    "ar": "مصراتة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "342",
+                "country_id": "125",
+                "name": {
+                    "en": "Mizdah",
+                    "ar": "مزدة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "349",
+                "country_id": "125",
+                "name": {
+                    "en": "Murqub",
+                    "ar": "المرقب"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "334",
+                "country_id": "125",
+                "name": {
+                    "en": "Murzik",
+                    "ar": "مرزق"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "329",
+                "country_id": "125",
+                "name": {
+                    "en": "Nalut",
+                    "ar": "نالوت"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "351",
+                "country_id": "125",
+                "name": {
+                    "en": "Nuqat Alkhms",
+                    "ar": "النقاط الخمس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "357",
+                "country_id": "125",
+                "name": {
+                    "en": "Ras Lanuf",
+                    "ar": "راس لنوف"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "318",
+                "country_id": "125",
+                "name": {
+                    "en": "Sabratha",
+                    "ar": "صبراتة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "320",
+                "country_id": "125",
+                "name": {
+                    "en": "Sirte",
+                    "ar": "صرت"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "338",
+                "country_id": "125",
+                "name": {
+                    "en": "Suluq",
+                    "ar": "سلوق"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "363",
+                "country_id": "125",
+                "name": {
+                    "en": "Susa",
+                    "ar": "سوسة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "323",
+                "country_id": "125",
+                "name": {
+                    "en": "Tabrouk",
+                    "ar": "طبروق"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "324",
+                "country_id": "125",
+                "name": {
+                    "en": "Tarhuna",
+                    "ar": "ترهونة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "330",
+                "country_id": "125",
+                "name": {
+                    "en": "Tawergha",
+                    "ar": "تاورغاء"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "312",
+                "country_id": "125",
+                "name": {
+                    "en": "Tirpoli",
+                    "ar": "طرابلس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "353",
+                "country_id": "125",
+                "name": {
+                    "en": "Tocra",
+                    "ar": "توكرة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "333",
+                "country_id": "125",
+                "name": {
+                    "en": "Ubari",
+                    "ar": "أوباري"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "358",
+                "country_id": "125",
+                "name": {
+                    "en": "Waddan",
+                    "ar": "ودان"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "347",
+                "country_id": "125",
+                "name": {
+                    "en": "Wadi ALhaya",
+                    "ar": "وادي الحياة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "346",
+                "country_id": "125",
+                "name": {
+                    "en": "Wadi Shatii",
+                    "ar": "وادي الشاطئ"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "352",
+                "country_id": "125",
+                "name": {
+                    "en": "Western Mountain",
+                    "ar": "الجبل الغربي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "331",
+                "country_id": "125",
+                "name": {
+                    "en": "Yafran",
+                    "ar": "يفرن"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "315",
+                "country_id": "125",
+                "name": {
+                    "en": "Zawya",
+                    "ar": "الزاوية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "340",
+                "country_id": "125",
+                "name": {
+                    "en": "Zintan",
+                    "ar": "الزنتان"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "317",
+                "country_id": "125",
+                "name": {
+                    "en": "Zletin",
+                    "ar": "زليتن"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "332",
+                "country_id": "125",
+                "name": {
+                    "en": "Zuwara",
+                    "ar": "زوارة"
+                },
+                "index_order": "100"
+            }
+        ]
+    },
+    {
+        "id": "139",
+        "name": {
+            "en": "Mauritania",
+            "ar": "موريتانيا"
+        },
+        "iso2": "MR",
+        "iso_code": "MR",
+        "cities": [
+            {
+                "id": "414",
+                "country_id": "139",
+                "name": {
+                    "en": "Atar",
+                    "ar": "أطار"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "416",
+                "country_id": "139",
+                "name": {
+                    "en": "El Aioun",
+                    "ar": "العيون"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "411",
+                "country_id": "139",
+                "name": {
+                    "en": "Nouadiboh",
+                    "ar": "أنواديبو"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "410",
+                "country_id": "139",
+                "name": {
+                    "en": "Noukchout",
+                    "ar": "نواكشط"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "412",
+                "country_id": "139",
+                "name": {
+                    "en": "Rosso",
+                    "ar": "روصو"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "415",
+                "country_id": "139",
+                "name": {
+                    "en": "Tintane",
+                    "ar": "الطينطان"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "413",
+                "country_id": "139",
+                "name": {
+                    "en": "Zouerat",
+                    "ar": "أزويرات"
+                },
+                "index_order": "100"
+            }
+        ]
+    },
+    {
+        "id": "149",
+        "name": {
+            "en": "Morocco",
+            "ar": "المغرب"
+        },
+        "iso2": "MA",
+        "iso_code": "MA",
+        "cities": [
+            {
+                "id": "367",
+                "country_id": "149",
+                "name": {
+                    "en": "Aghadir",
+                    "ar": "أغادير"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "372",
+                "country_id": "149",
+                "name": {
+                    "en": "Al Hocima",
+                    "ar": "الحسيمة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "374",
+                "country_id": "149",
+                "name": {
+                    "en": "Aljadida",
+                    "ar": "الجديدة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "373",
+                "country_id": "149",
+                "name": {
+                    "en": "Benni Melal",
+                    "ar": "بني ملال"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "364",
+                "country_id": "149",
+                "name": {
+                    "en": "Casablanca",
+                    "ar": "الدار البيضاء"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "380",
+                "country_id": "149",
+                "name": {
+                    "en": "Errachida",
+                    "ar": "الرشيدة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "375",
+                "country_id": "149",
+                "name": {
+                    "en": "Essaouira",
+                    "ar": "الصويرة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "369",
+                "country_id": "149",
+                "name": {
+                    "en": "Fes",
+                    "ar": "فاس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "376",
+                "country_id": "149",
+                "name": {
+                    "en": "Kenitra",
+                    "ar": "القنيطرة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "381",
+                "country_id": "149",
+                "name": {
+                    "en": "Khneifra",
+                    "ar": "خنيفرة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "382",
+                "country_id": "149",
+                "name": {
+                    "en": "Khouribga",
+                    "ar": "خريبكة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "387",
+                "country_id": "149",
+                "name": {
+                    "en": "Ksar Elkbir",
+                    "ar": "القصر الكبير"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "383",
+                "country_id": "149",
+                "name": {
+                    "en": "Larache",
+                    "ar": "العرائش"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "366",
+                "country_id": "149",
+                "name": {
+                    "en": "Marrakesh",
+                    "ar": "مراكش"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "370",
+                "country_id": "149",
+                "name": {
+                    "en": "Meknas",
+                    "ar": "مكناس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "377",
+                "country_id": "149",
+                "name": {
+                    "en": "Nador",
+                    "ar": "الناظور"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "371",
+                "country_id": "149",
+                "name": {
+                    "en": "Oujda",
+                    "ar": "وجدة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "384",
+                "country_id": "149",
+                "name": {
+                    "en": "Ourzazat",
+                    "ar": "ورزازات"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "365",
+                "country_id": "149",
+                "name": {
+                    "en": "Rabat",
+                    "ar": "الرباط"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "378",
+                "country_id": "149",
+                "name": {
+                    "en": "Sale",
+                    "ar": "سلا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "385",
+                "country_id": "149",
+                "name": {
+                    "en": "Settat",
+                    "ar": "سطات"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "368",
+                "country_id": "149",
+                "name": {
+                    "en": "Tanger",
+                    "ar": "طنجة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "386",
+                "country_id": "149",
+                "name": {
+                    "en": "Taza",
+                    "ar": "تازة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "379",
+                "country_id": "149",
+                "name": {
+                    "en": "Tetouan",
+                    "ar": "تطوان"
+                },
+                "index_order": "100"
+            }
+        ]
+    },
+    {
+        "id": "166",
+        "name": {
+            "en": "Oman",
+            "ar": "سلطنة عمان"
+        },
+        "iso2": "OM",
+        "iso_code": "OM",
+        "cities": [
+            {
+                "id": "194",
+                "country_id": "166",
+                "name": {
+                    "en": "Adam",
+                    "ar": "أدم"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "201",
+                "country_id": "166",
+                "name": {
+                    "en": "Al &#039;Awabi",
+                    "ar": "العوابي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "235",
+                "country_id": "166",
+                "name": {
+                    "en": "Al Duqum",
+                    "ar": "الدقم"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "236",
+                "country_id": "166",
+                "name": {
+                    "en": "Al Jazur",
+                    "ar": "الجازر"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "210",
+                "country_id": "166",
+                "name": {
+                    "en": "Al Kamil And Al wafi",
+                    "ar": "الكامل و الوافي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "202",
+                "country_id": "166",
+                "name": {
+                    "en": "Al khaboura",
+                    "ar": "الخابورة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "203",
+                "country_id": "166",
+                "name": {
+                    "en": "Al Masn&#039;a",
+                    "ar": "المصنعة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "220",
+                "country_id": "166",
+                "name": {
+                    "en": "Al Mazyona",
+                    "ar": "المزيونة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "211",
+                "country_id": "166",
+                "name": {
+                    "en": "Al Mudaibi",
+                    "ar": "المضيبي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "212",
+                "country_id": "166",
+                "name": {
+                    "en": "Al Qabil",
+                    "ar": "القابل"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "234",
+                "country_id": "166",
+                "name": {
+                    "en": "Al sinainah",
+                    "ar": "السنينة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "229",
+                "country_id": "166",
+                "name": {
+                    "en": "Amerat",
+                    "ar": "العامرات"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "195",
+                "country_id": "166",
+                "name": {
+                    "en": "Bahla",
+                    "ar": "بهلاء"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "187",
+                "country_id": "166",
+                "name": {
+                    "en": "Barka",
+                    "ar": "بركاء"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "196",
+                "country_id": "166",
+                "name": {
+                    "en": "Bidbid",
+                    "ar": "بدبد"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "213",
+                "country_id": "166",
+                "name": {
+                    "en": "Bidiya",
+                    "ar": "بدية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "231",
+                "country_id": "166",
+                "name": {
+                    "en": "Bosher",
+                    "ar": "بوشر"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "240",
+                "country_id": "166",
+                "name": {
+                    "en": "Bukha",
+                    "ar": "بخا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "233",
+                "country_id": "166",
+                "name": {
+                    "en": "Buraimi",
+                    "ar": "البريمي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "221",
+                "country_id": "166",
+                "name": {
+                    "en": "Dhalkut",
+                    "ar": "ظلكوت"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "190",
+                "country_id": "166",
+                "name": {
+                    "en": "Dhank",
+                    "ar": "ضنك"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "239",
+                "country_id": "166",
+                "name": {
+                    "en": "Dibba",
+                    "ar": "دبا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "214",
+                "country_id": "166",
+                "name": {
+                    "en": "Dima And Al Taaiyin",
+                    "ar": "دماء و الطائيين"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "237",
+                "country_id": "166",
+                "name": {
+                    "en": "Haima",
+                    "ar": "هيما"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "197",
+                "country_id": "166",
+                "name": {
+                    "en": "Hamra",
+                    "ar": "الحمراء"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "215",
+                "country_id": "166",
+                "name": {
+                    "en": "Ibra",
+                    "ar": "إبراء"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "191",
+                "country_id": "166",
+                "name": {
+                    "en": "Ibri",
+                    "ar": "عبري"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "198",
+                "country_id": "166",
+                "name": {
+                    "en": "Izki",
+                    "ar": "ازكي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "216",
+                "country_id": "166",
+                "name": {
+                    "en": "Ja&#039;alan Bani Bu Ali",
+                    "ar": "جعلان بني بو علي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "241",
+                "country_id": "166",
+                "name": {
+                    "en": "Khasab",
+                    "ar": "خصب"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "205",
+                "country_id": "166",
+                "name": {
+                    "en": "Liwa",
+                    "ar": "لوى"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "242",
+                "country_id": "166",
+                "name": {
+                    "en": "Madha",
+                    "ar": "مدحاء"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "238",
+                "country_id": "166",
+                "name": {
+                    "en": "Mahut",
+                    "ar": "محوت"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "199",
+                "country_id": "166",
+                "name": {
+                    "en": "Manah",
+                    "ar": "منح"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "217",
+                "country_id": "166",
+                "name": {
+                    "en": "Masira",
+                    "ar": "مصيرة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "222",
+                "country_id": "166",
+                "name": {
+                    "en": "Mirbat",
+                    "ar": "مرباط"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "223",
+                "country_id": "166",
+                "name": {
+                    "en": "Muqshin",
+                    "ar": "مقشن"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "185",
+                "country_id": "166",
+                "name": {
+                    "en": "Muscat",
+                    "ar": "مسقط"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "232",
+                "country_id": "166",
+                "name": {
+                    "en": "Muttrah",
+                    "ar": "مطرح"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "206",
+                "country_id": "166",
+                "name": {
+                    "en": "Nakhl",
+                    "ar": "نخل"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "193",
+                "country_id": "166",
+                "name": {
+                    "en": "Nizwa",
+                    "ar": "نزوى"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "224",
+                "country_id": "166",
+                "name": {
+                    "en": "Rakhyut",
+                    "ar": "رخيوت"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "204",
+                "country_id": "166",
+                "name": {
+                    "en": "Rustaq",
+                    "ar": "الرستاق"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "225",
+                "country_id": "166",
+                "name": {
+                    "en": "Sadah",
+                    "ar": "سدح"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "186",
+                "country_id": "166",
+                "name": {
+                    "en": "Saham",
+                    "ar": "صحم"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "219",
+                "country_id": "166",
+                "name": {
+                    "en": "Salala",
+                    "ar": "صلالة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "230",
+                "country_id": "166",
+                "name": {
+                    "en": "Seeb",
+                    "ar": "السيب"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "226",
+                "country_id": "166",
+                "name": {
+                    "en": "Shalim And The Hallaniyat",
+                    "ar": "شليم و جزر الحلانيات"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "207",
+                "country_id": "166",
+                "name": {
+                    "en": "Shinas",
+                    "ar": "شناص"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "188",
+                "country_id": "166",
+                "name": {
+                    "en": "Sohar",
+                    "ar": "صحار"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "200",
+                "country_id": "166",
+                "name": {
+                    "en": "Sumail",
+                    "ar": "سمائل"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "209",
+                "country_id": "166",
+                "name": {
+                    "en": "Sur",
+                    "ar": "صور"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "189",
+                "country_id": "166",
+                "name": {
+                    "en": "Suwaiq",
+                    "ar": "السويق"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "227",
+                "country_id": "166",
+                "name": {
+                    "en": "Taqah",
+                    "ar": "طاقة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "228",
+                "country_id": "166",
+                "name": {
+                    "en": "Thumrait",
+                    "ar": "ثمريت"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "208",
+                "country_id": "166",
+                "name": {
+                    "en": "Wadi Al Ma&#039;awal",
+                    "ar": "وادي المعاول"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "218",
+                "country_id": "166",
+                "name": {
+                    "en": "Wadi Bani Khalid",
+                    "ar": "وادي بني خالد"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "192",
+                "country_id": "166",
+                "name": {
+                    "en": "Yunqul",
+                    "ar": "ينقل"
+                },
+                "index_order": "100"
+            }
+        ]
+    },
+    {
+        "id": "169",
+        "name": {
+            "en": "Palestine",
+            "ar": "فلسطين"
+        },
+        "iso2": "PS",
+        "iso_code": "PS",
+        "cities": [
+            {
+                "id": "157",
+                "country_id": "169",
+                "name": {
+                    "en": "Bethlehem",
+                    "ar": "بيت لحم"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "151",
+                "country_id": "169",
+                "name": {
+                    "en": "Gaza",
+                    "ar": "غزة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "153",
+                "country_id": "169",
+                "name": {
+                    "en": "Hebron",
+                    "ar": "الخليل"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "155",
+                "country_id": "169",
+                "name": {
+                    "en": "Jenin",
+                    "ar": "جنين"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "158",
+                "country_id": "169",
+                "name": {
+                    "en": "Jericho",
+                    "ar": "أريحا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "154",
+                "country_id": "169",
+                "name": {
+                    "en": "Jerusalem",
+                    "ar": "القدس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "152",
+                "country_id": "169",
+                "name": {
+                    "en": "Nablus",
+                    "ar": "نابلس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "150",
+                "country_id": "169",
+                "name": {
+                    "en": "Ramallah",
+                    "ar": "رام الله"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "159",
+                "country_id": "169",
+                "name": {
+                    "en": "Salfit",
+                    "ar": "سلفيت"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "160",
+                "country_id": "169",
+                "name": {
+                    "en": "Tubas",
+                    "ar": "طوباس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "156",
+                "country_id": "169",
+                "name": {
+                    "en": "tulkarm",
+                    "ar": "طولكرم"
+                },
+                "index_order": "100"
+            }
+        ]
+    },
+    {
+        "id": "179",
+        "name": {
+            "en": "Qatar",
+            "ar": "دولة قطر"
+        },
+        "iso2": "QA",
+        "iso_code": "QA",
+        "cities": [
+            {
+                "id": "184",
+                "country_id": "179",
+                "name": {
+                    "en": "Al Daayen",
+                    "ar": "الضعاين"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "182",
+                "country_id": "179",
+                "name": {
+                    "en": "Al Khor",
+                    "ar": "الخور"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "181",
+                "country_id": "179",
+                "name": {
+                    "en": "Al Rayyan",
+                    "ar": "الريان"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "180",
+                "country_id": "179",
+                "name": {
+                    "en": "Al Shamal",
+                    "ar": "مدينة الشمال"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "178",
+                "country_id": "179",
+                "name": {
+                    "en": "Al Wakrah",
+                    "ar": "الوكرة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "177",
+                "country_id": "179",
+                "name": {
+                    "en": "Doha",
+                    "ar": "الدوحة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "183",
+                "country_id": "179",
+                "name": {
+                    "en": "Lusail",
+                    "ar": "اللسيل"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "179",
+                "country_id": "179",
+                "name": {
+                    "en": "Um Salal",
+                    "ar": "أم صلال"
+                },
+                "index_order": "100"
+            }
+        ]
+    },
+    {
+        "id": "190",
+        "name": {
+            "en": "Saudi Arabia",
+            "ar": "المملكة العربية السعودية"
+        },
+        "iso2": "SA",
+        "iso_code": "SA",
+        "cities": [
+            {
+                "id": "21",
+                "country_id": "190",
+                "name": {
+                    "en": "Abha",
+                    "ar": "أبها"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "84",
+                "country_id": "190",
+                "name": {
+                    "en": "Abu Arish",
+                    "ar": "أبو عريش"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "121",
+                "country_id": "190",
+                "name": {
+                    "en": "Ad Dilam",
+                    "ar": "الدلم"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "113",
+                "country_id": "190",
+                "name": {
+                    "en": "Afif",
+                    "ar": "عفيف"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "49",
+                "country_id": "190",
+                "name": {
+                    "en": "Ahad Al Masarihah",
+                    "ar": "احد المسارحة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "107",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Badayea",
+                    "ar": "البدائع"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "37",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Bahah",
+                    "ar": "الباحة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "108",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Bkiria",
+                    "ar": "البكيرية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "112",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Ghat",
+                    "ar": "الغاط"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "123",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Hariq",
+                    "ar": "الحريق"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "23",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Hofuf",
+                    "ar": "الهفوف"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "27",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Jubail",
+                    "ar": "الجبيل"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "88",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Jumum",
+                    "ar": "الجموم"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "120",
+                "country_id": "190",
+                "name": {
+                    "en": "Al kharj",
+                    "ar": "الخرج"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "24",
+                "country_id": "190",
+                "name": {
+                    "en": "Al khobar",
+                    "ar": "الخبر"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "89",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Khurma",
+                    "ar": "الخرمة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "92",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Madinah",
+                    "ar": "المدينة المنورة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "110",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Majma&#039;ah",
+                    "ar": "المجمعة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "105",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Mithnab",
+                    "ar": "المذنب"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "119",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Muzahmiyya",
+                    "ar": "المزاحمية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "22",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Qatif",
+                    "ar": "القطيف"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "86",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Qunfudhah",
+                    "ar": "القنفذة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "118",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Quway&#039;iyah",
+                    "ar": "القويعية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "45",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Shannan",
+                    "ar": "الشنان"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "99",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Wajh",
+                    "ar": "الوجة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "111",
+                "country_id": "190",
+                "name": {
+                    "en": "Al Zulfi",
+                    "ar": "الزلفي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "35",
+                "country_id": "190",
+                "name": {
+                    "en": "Anak",
+                    "ar": "عنك"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "104",
+                "country_id": "190",
+                "name": {
+                    "en": "Ar Rass",
+                    "ar": "الرس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "41",
+                "country_id": "190",
+                "name": {
+                    "en": "Arar",
+                    "ar": "عرعر"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "122",
+                "country_id": "190",
+                "name": {
+                    "en": "As Sulayyil",
+                    "ar": "السليل"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "109",
+                "country_id": "190",
+                "name": {
+                    "en": "Ash Shimasiyah",
+                    "ar": "الشماسية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "94",
+                "country_id": "190",
+                "name": {
+                    "en": "Badr",
+                    "ar": "بدر"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "30",
+                "country_id": "190",
+                "name": {
+                    "en": "Buqayq",
+                    "ar": "بقيق"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "102",
+                "country_id": "190",
+                "name": {
+                    "en": "Buraidah",
+                    "ar": "بريدة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "20",
+                "country_id": "190",
+                "name": {
+                    "en": "Dammam",
+                    "ar": "الدمام"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "116",
+                "country_id": "190",
+                "name": {
+                    "en": "Dawadmi",
+                    "ar": "الدوادمي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "29",
+                "country_id": "190",
+                "name": {
+                    "en": "Dhahran",
+                    "ar": "الظهران"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "117",
+                "country_id": "190",
+                "name": {
+                    "en": "Diriyah",
+                    "ar": "الدرعية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "101",
+                "country_id": "190",
+                "name": {
+                    "en": "Duba",
+                    "ar": "ضبا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "39",
+                "country_id": "190",
+                "name": {
+                    "en": "Dumat Al Jandal",
+                    "ar": "دومة الجندل"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "25",
+                "country_id": "190",
+                "name": {
+                    "en": "Hafr Al Batin",
+                    "ar": "حفرالباطن"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "44",
+                "country_id": "190",
+                "name": {
+                    "en": "Hail",
+                    "ar": "حائل"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "126",
+                "country_id": "190",
+                "name": {
+                    "en": "Hawtat Sadir",
+                    "ar": "حوطة سدير"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "124",
+                "country_id": "190",
+                "name": {
+                    "en": "Howtat Bani Tamim",
+                    "ar": "حوطة بني تميم"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "46",
+                "country_id": "190",
+                "name": {
+                    "en": "Jazan",
+                    "ar": "جازان"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "18",
+                "country_id": "190",
+                "name": {
+                    "en": "Jeddah",
+                    "ar": "جدة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "34",
+                "country_id": "190",
+                "name": {
+                    "en": "khafji",
+                    "ar": "الخفجي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "95",
+                "country_id": "190",
+                "name": {
+                    "en": "Khaybar",
+                    "ar": "خيبر"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "91",
+                "country_id": "190",
+                "name": {
+                    "en": "King Abdullah Economic Ci",
+                    "ar": "الملك عبدالله الإقتصادية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "125",
+                "country_id": "190",
+                "name": {
+                    "en": "Layla",
+                    "ar": "ليلى"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "19",
+                "country_id": "190",
+                "name": {
+                    "en": "Mecca",
+                    "ar": "مكة المكرمة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "28",
+                "country_id": "190",
+                "name": {
+                    "en": "Nairyah",
+                    "ar": "النعيرية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "96",
+                "country_id": "190",
+                "name": {
+                    "en": "Najran",
+                    "ar": "نجران"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "26",
+                "country_id": "190",
+                "name": {
+                    "en": "Qaryat Al Ulya",
+                    "ar": "قرية العليا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "85",
+                "country_id": "190",
+                "name": {
+                    "en": "Rabigh",
+                    "ar": "رابغ"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "42",
+                "country_id": "190",
+                "name": {
+                    "en": "Rafha",
+                    "ar": "رفحاء"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "36",
+                "country_id": "190",
+                "name": {
+                    "en": "Ras Tanura",
+                    "ar": "رأس تنورة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "17",
+                "country_id": "190",
+                "name": {
+                    "en": "Riyadh",
+                    "ar": "الرياض"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "106",
+                "country_id": "190",
+                "name": {
+                    "en": "Riyadh Al Khabra",
+                    "ar": "رياض الخبراء"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "47",
+                "country_id": "190",
+                "name": {
+                    "en": "Sabya",
+                    "ar": "صبيا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "33",
+                "country_id": "190",
+                "name": {
+                    "en": "Safwa",
+                    "ar": "صفوى"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "31",
+                "country_id": "190",
+                "name": {
+                    "en": "Saihat",
+                    "ar": "سيهات"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "38",
+                "country_id": "190",
+                "name": {
+                    "en": "sakakah",
+                    "ar": "سكاكا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "48",
+                "country_id": "190",
+                "name": {
+                    "en": "Samtah",
+                    "ar": "صامطة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "115",
+                "country_id": "190",
+                "name": {
+                    "en": "Shaqraa",
+                    "ar": "شقراء"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "97",
+                "country_id": "190",
+                "name": {
+                    "en": "Sharorah",
+                    "ar": "شرورة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "40",
+                "country_id": "190",
+                "name": {
+                    "en": "Tabarjal",
+                    "ar": "طبرجل"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "98",
+                "country_id": "190",
+                "name": {
+                    "en": "Tabuk",
+                    "ar": "تبوك"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "32",
+                "country_id": "190",
+                "name": {
+                    "en": "Tarout Island",
+                    "ar": "جزيرة تاروت"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "114",
+                "country_id": "190",
+                "name": {
+                    "en": "Thadig",
+                    "ar": "ثادق"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "90",
+                "country_id": "190",
+                "name": {
+                    "en": "Thuwal",
+                    "ar": "ثول"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "43",
+                "country_id": "190",
+                "name": {
+                    "en": "Turaif",
+                    "ar": "طريف"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "87",
+                "country_id": "190",
+                "name": {
+                    "en": "Turbah",
+                    "ar": "تربة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "100",
+                "country_id": "190",
+                "name": {
+                    "en": "Umluj",
+                    "ar": "املج"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "103",
+                "country_id": "190",
+                "name": {
+                    "en": "Unaizah",
+                    "ar": "عنيزة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "93",
+                "country_id": "190",
+                "name": {
+                    "en": "Yanbu",
+                    "ar": "ينبع"
+                },
+                "index_order": "100"
+            }
+        ]
+    },
+    {
+        "id": "206",
+        "name": {
+            "en": "Sudan",
+            "ar": "السودان"
+        },
+        "iso2": "SD",
+        "iso_code": "SD",
+        "cities": []
+    },
+    {
+        "id": "212",
+        "name": {
+            "en": "Syrian Arab Republic",
+            "ar": "الجمهورية العربية السورية"
+        },
+        "iso2": "SY",
+        "iso_code": "SY",
+        "cities": []
+    },
+    {
+        "id": "221",
+        "name": {
+            "en": "Tunisia",
+            "ar": "تونس"
+        },
+        "iso2": "TN",
+        "iso_code": "TN",
+        "cities": [
+            {
+                "id": "297",
+                "country_id": "221",
+                "name": {
+                    "en": "Ariana",
+                    "ar": "أريانة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "298",
+                "country_id": "221",
+                "name": {
+                    "en": "Beja",
+                    "ar": "باجة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "294",
+                "country_id": "221",
+                "name": {
+                    "en": "Ben  Arous",
+                    "ar": "بنزرت"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "311",
+                "country_id": "221",
+                "name": {
+                    "en": "El kef",
+                    "ar": "الكاف"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "295",
+                "country_id": "221",
+                "name": {
+                    "en": "Gabes",
+                    "ar": "قابس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "310",
+                "country_id": "221",
+                "name": {
+                    "en": "Gafsa",
+                    "ar": "قفصة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "301",
+                "country_id": "221",
+                "name": {
+                    "en": "Jendouba",
+                    "ar": "جندوبة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "309",
+                "country_id": "221",
+                "name": {
+                    "en": "Kasserine",
+                    "ar": "القصرين"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "305",
+                "country_id": "221",
+                "name": {
+                    "en": "La Mandouba",
+                    "ar": "منوبة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "296",
+                "country_id": "221",
+                "name": {
+                    "en": "Mednine",
+                    "ar": "مدنين"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "307",
+                "country_id": "221",
+                "name": {
+                    "en": "Mhdia",
+                    "ar": "مهدية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "306",
+                "country_id": "221",
+                "name": {
+                    "en": "Monastir",
+                    "ar": "المنستير"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "292",
+                "country_id": "221",
+                "name": {
+                    "en": "Nabuel",
+                    "ar": "نابل"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "308",
+                "country_id": "221",
+                "name": {
+                    "en": "Qabili",
+                    "ar": "قبلي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "291",
+                "country_id": "221",
+                "name": {
+                    "en": "Sfax",
+                    "ar": "صفاقس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "302",
+                "country_id": "221",
+                "name": {
+                    "en": "Sidi Bou Zaid",
+                    "ar": "سيدي بوزيد"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "303",
+                "country_id": "221",
+                "name": {
+                    "en": "Siliana",
+                    "ar": "سليانة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "293",
+                "country_id": "221",
+                "name": {
+                    "en": "Sousa",
+                    "ar": "سوسة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "299",
+                "country_id": "221",
+                "name": {
+                    "en": "Tataouin",
+                    "ar": "تطاوين"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "300",
+                "country_id": "221",
+                "name": {
+                    "en": "Toezor",
+                    "ar": "توزر"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "290",
+                "country_id": "221",
+                "name": {
+                    "en": "Tunis",
+                    "ar": "تونس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "304",
+                "country_id": "221",
+                "name": {
+                    "en": "Zaghwan",
+                    "ar": "زغوان"
+                },
+                "index_order": "100"
+            }
+        ]
+    },
+    {
+        "id": "222",
+        "name": {
+            "en": "Turkey",
+            "ar": "تركيا"
+        },
+        "iso2": "TR",
+        "iso_code": "TR",
+        "cities": [
+            {
+                "id": "423",
+                "country_id": "222",
+                "name": {
+                    "en": "Adana",
+                    "ar": "اضانا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "421",
+                "country_id": "222",
+                "name": {
+                    "en": "Ankara",
+                    "ar": "انقرة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "419",
+                "country_id": "222",
+                "name": {
+                    "en": "Antalya",
+                    "ar": "انطاليا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "426",
+                "country_id": "222",
+                "name": {
+                    "en": "Bodrom",
+                    "ar": "بودروم"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "422",
+                "country_id": "222",
+                "name": {
+                    "en": "Bursa",
+                    "ar": "بورصة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "428",
+                "country_id": "222",
+                "name": {
+                    "en": "Eskishehir",
+                    "ar": "اسكيشهير"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "424",
+                "country_id": "222",
+                "name": {
+                    "en": "Fathyeh",
+                    "ar": "فتحية"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "417",
+                "country_id": "222",
+                "name": {
+                    "en": "Istanbul",
+                    "ar": "اسطنبول"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "418",
+                "country_id": "222",
+                "name": {
+                    "en": "Izmir",
+                    "ar": "ازمير"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "425",
+                "country_id": "222",
+                "name": {
+                    "en": "Marmaris",
+                    "ar": "مرمريس"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "427",
+                "country_id": "222",
+                "name": {
+                    "en": "Mersin",
+                    "ar": "مرسين"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "420",
+                "country_id": "222",
+                "name": {
+                    "en": "Tarabzon",
+                    "ar": "طرابزون"
+                },
+                "index_order": "100"
+            }
+        ]
+    },
+    {
+        "id": "228",
+        "name": {
+            "en": "United Arab Emirates",
+            "ar": "الإمارات العربية المتحدة"
+        },
+        "iso2": "AE",
+        "iso_code": "AE",
+        "cities": [
+            {
+                "id": "52",
+                "country_id": "228",
+                "name": {
+                    "en": "Abu Dahbi",
+                    "ar": "أبو ظبي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "171",
+                "country_id": "228",
+                "name": {
+                    "en": "Ajman",
+                    "ar": "عجمان"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "172",
+                "country_id": "228",
+                "name": {
+                    "en": "Al Ain",
+                    "ar": "العين"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "51",
+                "country_id": "228",
+                "name": {
+                    "en": "Dubai",
+                    "ar": "دبي"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "176",
+                "country_id": "228",
+                "name": {
+                    "en": "Fujairah",
+                    "ar": "الفجيرة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "174",
+                "country_id": "228",
+                "name": {
+                    "en": "Ras Al khaimah",
+                    "ar": "رأس الخيمة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "173",
+                "country_id": "228",
+                "name": {
+                    "en": "Sharjah",
+                    "ar": "الشارقة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "175",
+                "country_id": "228",
+                "name": {
+                    "en": "Um Al Quwain",
+                    "ar": "أم القوين"
+                },
+                "index_order": "100"
+            }
+        ]
+    },
+    {
+        "id": "242",
+        "name": {
+            "en": "Yemen",
+            "ar": "اليمن"
+        },
+        "iso2": "YE",
+        "iso_code": "YE",
+        "cities": [
+            {
+                "id": "403",
+                "country_id": "242",
+                "name": {
+                    "en": "Abyan",
+                    "ar": "أبين"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "404",
+                "country_id": "242",
+                "name": {
+                    "en": "Ad Dali`",
+                    "ar": "الضالع"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "389",
+                "country_id": "242",
+                "name": {
+                    "en": "Aden",
+                    "ar": "عدن"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "397",
+                "country_id": "242",
+                "name": {
+                    "en": "Al Baydaa",
+                    "ar": "البيضاء"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "399",
+                "country_id": "242",
+                "name": {
+                    "en": "Al Mahwit",
+                    "ar": "المحويت"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "405",
+                "country_id": "242",
+                "name": {
+                    "en": "Al Mhrah",
+                    "ar": "المهرة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "391",
+                "country_id": "242",
+                "name": {
+                    "en": "Al Mukalla",
+                    "ar": "المكلا"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "390",
+                "country_id": "242",
+                "name": {
+                    "en": "Alhudayda",
+                    "ar": "الحديدة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "398",
+                "country_id": "242",
+                "name": {
+                    "en": "Aljawf",
+                    "ar": "الجوف"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "396",
+                "country_id": "242",
+                "name": {
+                    "en": "Amran",
+                    "ar": "عمران"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "394",
+                "country_id": "242",
+                "name": {
+                    "en": "Dhamar",
+                    "ar": "ذمار"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "406",
+                "country_id": "242",
+                "name": {
+                    "en": "Hadrmout",
+                    "ar": "حضرموت"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "392",
+                "country_id": "242",
+                "name": {
+                    "en": "Ibb",
+                    "ar": "إب"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "408",
+                "country_id": "242",
+                "name": {
+                    "en": "Lahij",
+                    "ar": "لحج"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "400",
+                "country_id": "242",
+                "name": {
+                    "en": "Ma`rib",
+                    "ar": "مأرب"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "401",
+                "country_id": "242",
+                "name": {
+                    "en": "Raymah",
+                    "ar": "ريمة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "402",
+                "country_id": "242",
+                "name": {
+                    "en": "Saada",
+                    "ar": "صعدة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "388",
+                "country_id": "242",
+                "name": {
+                    "en": "Sanaa",
+                    "ar": "صنعاء"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "395",
+                "country_id": "242",
+                "name": {
+                    "en": "Seyun",
+                    "ar": "سيئون"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "409",
+                "country_id": "242",
+                "name": {
+                    "en": "Shabwah",
+                    "ar": "شبوة"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "407",
+                "country_id": "242",
+                "name": {
+                    "en": "Socotra",
+                    "ar": "أرخبيل سقطرى"
+                },
+                "index_order": "100"
+            },
+            {
+                "id": "393",
+                "country_id": "242",
+                "name": {
+                    "en": "Taiz",
+                    "ar": "تعز"
+                },
+                "index_order": "100"
+            }
+        ]
+    }
+]
