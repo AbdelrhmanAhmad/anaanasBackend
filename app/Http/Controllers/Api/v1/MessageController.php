@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Models\Chat;
 use App\Models\Message;
+use App\Models\UserNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -144,6 +145,24 @@ class MessageController extends Controller
 
         // Increment unread count for the other user
         $chat->incrementUnreadForUser($otherUserId);
+
+        // Push notification to recipient
+        if ($otherUserId) {
+            UserNotification::create([
+                'user_id' => (int) $otherUserId,
+                'type' => 'chat.message',
+                'title_ar' => 'رسالة جديدة',
+                'title_en' => 'New message',
+                'body_ar' => mb_substr((string) $request->body, 0, 160),
+                'body_en' => mb_substr((string) $request->body, 0, 160),
+                'url' => '/messaging?chat=' . rawurlencode((string) $chatId),
+                'data' => [
+                    'chat_id' => (string) $chatId,
+                    'post_id' => (int) $chat->post_id,
+                    'sender_id' => (int) $userId,
+                ],
+            ]);
+        }
 
         $sender = \App\Models\User::find($userId);
         return response()->json([

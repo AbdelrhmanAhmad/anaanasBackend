@@ -8,13 +8,16 @@ use App\Http\Resources\CategoryResource;
 use App\Http\Resources\SectionResource;
 use App\Models\Attribute;
 use App\Models\AttributeOption;
+use App\Models\CategoryFollow;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Post;
 use App\Models\PostData;
 use App\Models\PostReaction;
+use App\Models\SectionFollow;
 use App\Models\Section;
+use App\Models\UserNotification;
 use App\Models\User;
 use Filament\Forms\Components\Field;
 use Illuminate\Http\Request;
@@ -309,7 +312,15 @@ class SectionController extends Controller
         $content = \request()->all();
         unset($content['images']) ;
         $data = $content;
-        $data['attributes'] = $content['attributes'] ? json_decode($content['attributes'], true) : [];
+        $rawAttrs = $content['attributes'] ?? null;
+        if (is_array($rawAttrs)) {
+            $data['attributes'] = $rawAttrs;
+        } elseif (is_string($rawAttrs) && $rawAttrs !== '') {
+            $decoded = json_decode($rawAttrs, true);
+            $data['attributes'] = is_array($decoded) ? $decoded : [];
+        } else {
+            $data['attributes'] = [];
+        }
 //        $data['attributes'] =$content['attributes'] ?? [];
         $data['user_id'] = Auth::id();
         $post = Post::create($data);
@@ -340,7 +351,8 @@ class SectionController extends Controller
 //        $data['city'] = Ci;
         $data["attributes_and_options"] = $attr_collect  ->toArray() ;
         $post->postData()->create($data);
-        $post->postData ;
+        // لا نقرأ $post->postData هنا: يحمّل علاقة MongoDB ثم refresh() يحاول إعادة eager-loadها
+        // فيرمي BadMethodCallException على MongoDB Query Builder (whereIntegerInRaw).
 
         /** =========================
          *  تخزين الصور
@@ -388,17 +400,80 @@ class SectionController extends Controller
             }
         }
 
-//        return $post ;
-
-        return  response()->json(
-        [
-        'success' => true,
-        'status' => true,
-        'data' => $post ,
-        'message' =>"تم اضافه المنشور بنجاح" ,
+        // إرجاع نفس شكل عناصر قائمة «إعلاناتي» (مع العلاقات) لعرضها فوراً في الواجهة
+        $post->unsetRelation('postData');
+        $post->unsetRelation('postImages');
+        $post->refresh();
+        $post->load([
+            'user',
+            'category',
+            'section',
+            'city',
+            'postImages',
         ]);
 
-        Log::debug('data', $content);
+        // لا نستخدم loadCount('comments') هنا: نموذج Comment قد يكون على اتصال افتراضي يمر عبر MongoDB
+        // فيفشل BadMethodCallException "This method is not supported by MongoDB".
+        // منشور جديد لا تعليقات عليه أصلاً.
+        $payload = $post->toArray();
+        $payload['liked_by_me'] = false;
+        $payload['likes_count'] = (int) ($payload['likes_count'] ?? 0);
+        $payload['comments_count'] = 0;
+
+        $this->notifyFollowersAboutNewPost($post, (int) Auth::id());
+
+        return response()->json([
+            'success' => true,
+            'status' => true,
+            'data' => $payload,
+            'message' => 'تم اضافه المنشور بنجاح',
+        ]);
+    }
+
+    private function notifyFollowersAboutNewPost(Post $post, int $authorId): void
+    {
+        $sectionFollowerIds = SectionFollow::query()
+            ->where('section_id', (int) $post->section_id)
+            ->pluck('user_id')
+            ->map(fn ($id) => (int) $id)
+            ->all();
+
+        $categoryFollowerIds = [];
+        if ($post->category_id) {
+            $categoryFollowerIds = CategoryFollow::query()
+                ->where('category_id', (int) $post->category_id)
+                ->pluck('user_id')
+                ->map(fn ($id) => (int) $id)
+                ->all();
+        }
+
+        $targets = collect(array_merge($sectionFollowerIds, $categoryFollowerIds))
+            ->filter(fn ($id) => $id > 0 && $id !== $authorId)
+            ->unique()
+            ->values();
+
+        if ($targets->isEmpty()) {
+            return;
+        }
+
+        $sectionName = $post->section?->name ?? 'القسم';
+        $title = (string) $post->title;
+        foreach ($targets as $userId) {
+            UserNotification::create([
+                'user_id' => (int) $userId,
+                'type' => 'follow.new_post',
+                'title_ar' => 'إعلان جديد في قسم تتابعه',
+                'title_en' => 'New listing in a followed section',
+                'body_ar' => $title !== '' ? mb_substr($title, 0, 180) : ('قسم: ' . $sectionName),
+                'body_en' => $title !== '' ? mb_substr($title, 0, 180) : ('Section: ' . $sectionName),
+                'url' => '/post/' . (int) $post->id,
+                'data' => [
+                    'post_id' => (int) $post->id,
+                    'section_id' => (int) $post->section_id,
+                    'category_id' => (int) ($post->category_id ?? 0),
+                ],
+            ]);
+        }
     }
 
     public function cities(Request $request )

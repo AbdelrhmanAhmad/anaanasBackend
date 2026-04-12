@@ -8,6 +8,7 @@ use App\Models\Comment;
 use App\Models\CommentReaction;
 use App\Models\Post;
 use App\Models\PostEvent;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -129,6 +130,23 @@ class CommentController extends Controller
             ]);
         } catch (\Throwable $e) {
             // ignore analytics failures
+        }
+
+        if ((int) $post->user_id !== (int) $user->id) {
+            UserNotification::create([
+                'user_id' => (int) $post->user_id,
+                'type' => 'post.comment',
+                'title_ar' => 'تعليق جديد على إعلانك',
+                'title_en' => 'New comment on your post',
+                'body_ar' => mb_substr((string) $validated['body'], 0, 180),
+                'body_en' => mb_substr((string) $validated['body'], 0, 180),
+                'url' => '/post/' . (int) $post->id,
+                'data' => [
+                    'post_id' => (int) $post->id,
+                    'comment_id' => (int) $comment->id,
+                    'from_user_id' => (int) $user->id,
+                ],
+            ]);
         }
 
         return response()->json([

@@ -786,11 +786,100 @@ class PostController extends Controller
         $payload['data'] = collect($images->items())->map(function ($img) {
             $arr = $img->toArray();
             // Add full URL
-            $arr['image_full_url'] = $img->image ? Storage::disk('public')->url($img->image) : null;
+            $arr['image_full_url'] = $img->image ? Storage::disk('s3')->url($img->image) : null;
             return $arr;
         })->values()->all();
 
         return response()->json($payload);
+    }
+
+    /**
+     * Similar listings in the same category (fallback: same section). Public.
+     * GET /api/posts/{post}/similar?land=ar&limit=6
+     */
+    public function similar(Request $request, Post $post)
+    {
+        $land = $request->get('land');
+        if ($land) {
+            app()->setLocale($land);
+        }
+
+        $limit = (int) $request->get('limit', 6);
+        if ($limit < 1) {
+            $limit = 6;
+        }
+        if ($limit > 24) {
+            $limit = 24;
+        }
+
+        $query = Post::query()
+            ->with(['user', 'category', 'section', 'city', 'postImages'])
+            ->where('id', '!=', (int) $post->id)
+            ->where(function ($q) {
+                $q->whereNull('post_type')->orWhere('post_type', 'listing');
+            });
+
+        if ($post->category_id) {
+            $query->where('category_id', (int) $post->category_id);
+        } else {
+            $query->where('section_id', (int) $post->section_id);
+        }
+
+        $posts = $query->orderBy('created_at', 'desc')->limit($limit)->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $this->formatPostCards($posts),
+        ]);
+    }
+
+    /**
+     * More listings from the same section (excludes current post). Public.
+     * GET /api/posts/{post}/more-from-section?land=ar&limit=8
+     */
+    public function moreFromSection(Request $request, Post $post)
+    {
+        $land = $request->get('land');
+        if ($land) {
+            app()->setLocale($land);
+        }
+
+        $limit = (int) $request->get('limit', 8);
+        if ($limit < 1) {
+            $limit = 8;
+        }
+        if ($limit > 36) {
+            $limit = 36;
+        }
+
+        $query = Post::query()
+            ->with(['user', 'category', 'section', 'city', 'postImages'])
+            ->where('id', '!=', (int) $post->id)
+            ->where('section_id', (int) $post->section_id)
+            ->where(function ($q) {
+                $q->whereNull('post_type')->orWhere('post_type', 'listing');
+            });
+
+        $posts = $query->orderBy('created_at', 'desc')->limit($limit)->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $this->formatPostCards($posts),
+        ]);
+    }
+
+    /**
+     * @param  \Illuminate\Support\Collection<int, Post>|\Illuminate\Database\Eloquent\Collection<int, Post>  $posts
+     * @return array<int, array<string, mixed>>
+     */
+    private function formatPostCards($posts): array
+    {
+        return $posts->map(function (Post $p) {
+            $arr = $p->toArray();
+            $arr['likes_count'] = (int) ($arr['likes_count'] ?? 0);
+
+            return $arr;
+        })->values()->all();
     }
 }
 

@@ -6,7 +6,9 @@ use App\Http\Controllers\Api\v1\HomeStatsController;
 use App\Http\Controllers\Api\v1\ChatController;
 use App\Http\Controllers\Api\v1\CommentController;
 use App\Http\Controllers\Api\v1\CommentReactionController;
+use App\Http\Controllers\Api\v1\FollowController;
 use App\Http\Controllers\Api\v1\MessageController;
+use App\Http\Controllers\Api\v1\NotificationController;
 use App\Http\Controllers\Api\v1\PostController;
 use App\Http\Controllers\Api\v1\PostEventController;
 use App\Http\Controllers\Api\v1\PostReactionController;
@@ -36,6 +38,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 
 
+// إنشاء إعلان — الاستجابة تتضمّن المنشور مع العلاقات (مثل قائمة «إعلاناتي») للعرض الفوري في الواجهة
 Route::post("post", [\App\Http\Controllers\Api\v1\SectionController::class, 'post']);
 }) ;
 Route::get("posts", [\App\Http\Controllers\Api\v1\SectionController::class, 'getPosts']);
@@ -47,6 +50,8 @@ Route::middleware(['auth:sanctum'])->post('posts/{post}/comments', [CommentContr
 Route::get('posts/{post}/reactions', [PostReactionController::class, 'summary']);
 Route::middleware(['auth:sanctum'])->post('posts/{post}/reactions', [PostReactionController::class, 'toggle']);
 Route::post('posts/{post}/events', [PostEventController::class, 'store']);
+Route::get('posts/{post}/similar', [PostController::class, 'similar'])->whereNumber('post');
+Route::get('posts/{post}/more-from-section', [PostController::class, 'moreFromSection'])->whereNumber('post');
 Route::get('posts/{post}', [PostController::class, 'show'])->whereNumber('post');
 
 Route::get('comments/{comment}/replies', [CommentController::class, 'replies']);
@@ -93,6 +98,18 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('posts/my-posts', [PostController::class, 'myPosts']);
     // Get user's post images
     Route::get('posts/my-images', [PostController::class, 'myImages']);
+
+    // Notifications
+    Route::get('notifications', [NotificationController::class, 'index']);
+    Route::post('notifications/read-all', [NotificationController::class, 'markAllRead']);
+    Route::post('notifications/{notification}/read', [NotificationController::class, 'markRead']);
+
+    // Follows
+    Route::get('sections/{section}/follow', [FollowController::class, 'sectionStatus'])->whereNumber('section');
+    Route::post('sections/{section}/follow', [FollowController::class, 'toggleSection'])->whereNumber('section');
+    Route::get('categories/{category}/follow', [FollowController::class, 'categoryStatus'])->whereNumber('category');
+    Route::post('categories/{category}/follow', [FollowController::class, 'toggleCategory'])->whereNumber('category');
+    Route::get('follows', [FollowController::class, 'myFollows']);
 });
 
 Route::prefix('auth')->group(function () {
