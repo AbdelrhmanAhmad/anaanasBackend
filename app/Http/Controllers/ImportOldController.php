@@ -21,14 +21,14 @@ class ImportOldController extends Controller
     {
         ini_set('max_execution_time', 3000);
 
-        \Artisan::call('migrate');
+       //\Artisan::call('migrate');
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 //        DB::table("users") ->truncate();
 //        DB::table("posts") ->truncate();
 //        DB::table("post_images") ->truncate();
 //        DB::connection('mongodb')->table("posts") ->truncate();
         $loop = 0 ;
-  /*      DB::connection("mysql2")->table("users")
+     DB::connection("mysql2")->table("users")
             ->orderBy('user_id')
             ->chunk(1000, function ($users) use (&$loop) {
                 $data = [] ;
@@ -36,40 +36,34 @@ class ImportOldController extends Controller
 
                 $item['id'] = $user->user_id;
                 $item['name'] = $user->user_name;
-//                $item['first_name'] = $user->user_name;
-//                $item['last_name'] = $user->user_name;
-                $item['email'] =$loop .  $user->user_email;
-//                $item['email_verified'] = $user->user_email_verified;
-//                $item['email_verification_code'] = $user->user_email_verification_code;
+                //$item['first_name'] = $user->user_name;
+                //$item['last_name'] = $user->user_name             ;
+                 $item['email'] =$loop . " " .  $user->user_email;
+                //$item['email_verified'] = $user->user_email_verified;
+                //$item['email_verification_code'] = $user->user_email_verification_code                ;
                 $item['mobile'] = $user->user_phone;
-//                $item['phone_verified'] = $user->user_phone_verified;
-//                $item['phone_verification_code'] = $user->user_phone_verification_code;
+                //$item['phone_verified'] = $user->user_phone_verified;
+                //$item['phone_verification_code'] = $user->user_phone_verification_code;
                 $item['password'] = $user->user_password;
-
                 $loop ++ ;
-
                 $data[] = $item;
             }
-
-
                 DB::connection("mysql")->table("users")  ->insert($data);
-
         });
-*/
+
+
 
 
         DB::connection("mysql2")->table("posts")
             ->whereNull("deleted_at")
             ->whereNotNull("section_id")
-            ->where('post_id' , ">" , 126077)
+          //  ->where('post_id' , ">" , 126077)
 //            ->where("attributeObjects" , "LIKE" , "%attributes%")
             ->orderBy('post_id' , 'asc')
             ->chunk(1000, function ($posts) use (&$loop) {
                 foreach ($posts as $post) {
                     $images =   DB::connection("mysql2")->table("posts_photos")->where("post_id" , $post->post_id)->get();
-
-
-                    $attributeObjects = $post->attributeObjects ? json_decode($post->attributeObjects, true) : [];
+                 $attributeObjects = $post->attributeObjects ? json_decode($post->attributeObjects, true) : [];
                  $attributes =  $attributeObjects['attributes'] ?? [] ;
                  $title = $post->post_title ?? $post->text  ;
                     $item['id'] = $post->post_id;
