@@ -20,7 +20,7 @@ class PostReactionController extends Controller
     public function toggle(Request $request, Post $post)
     {
         $validated = $request->validate([
-            'type' => ['required', 'string', 'in:like'],
+            'type' => ['required', 'string', 'in:' . implode(',', PostReaction::allowedTypes())],
         ]);
 
         /** @var \App\Models\User $user */
@@ -28,34 +28,42 @@ class PostReactionController extends Controller
         $type = $validated['type'];
 
         $toggledOn = false;
-        $likesCount = (int) ($post->likes_count ?? 0);
+        $likesCount = 0;
+        $reactionTypeByMe = null;
+        $reactionCounts = [];
 
-        DB::transaction(function () use ($post, $user, $type, &$toggledOn, &$likesCount) {
+        DB::transaction(function () use ($post, $user, $type, &$toggledOn, &$likesCount, &$reactionTypeByMe, &$reactionCounts) {
             $existing = PostReaction::query()
                 ->where('post_id', (int) $post->id)
                 ->where('user_id', (int) $user->id)
-                ->where('type', $type)
                 ->first();
 
             $hasLikesColumn = Schema::hasColumn('posts', 'likes_count');
 
-            if ($existing) {
+            if ($existing && (string) $existing->type === $type) {
                 $existing->delete();
                 $toggledOn = false;
-
-                if ($hasLikesColumn) {
-                    // Avoid going negative
-                    $post->refresh();
-                    if ((int) $post->likes_count > 0) {
-                        $post->decrement('likes_count');
-                    }
-                }
+                $reactionTypeByMe = null;
 
                 PostEvent::create([
                     'post_id' => (int) $post->id,
                     'user_id' => (int) $user->id,
                     'event' => 'post_unlike',
                     'meta' => ['type' => $type],
+                ]);
+            } elseif ($existing) {
+                $existing->update(['type' => $type]);
+                $toggledOn = true;
+                $reactionTypeByMe = $type;
+
+                PostEvent::create([
+                    'post_id' => (int) $post->id,
+                    'user_id' => (int) $user->id,
+                    'event' => 'post_like',
+                    'meta' => [
+                        'type' => $type,
+                        'mode' => 'switch',
+                    ],
                 ]);
             } else {
                 PostReaction::create([
@@ -64,10 +72,7 @@ class PostReactionController extends Controller
                     'type' => $type,
                 ]);
                 $toggledOn = true;
-
-                if ($hasLikesColumn) {
-                    $post->increment('likes_count');
-                }
+                $reactionTypeByMe = $type;
 
                 PostEvent::create([
                     'post_id' => (int) $post->id,
@@ -77,8 +82,25 @@ class PostReactionController extends Controller
                 ]);
             }
 
+            $reactionCountsRaw = PostReaction::query()
+                ->where('post_id', (int) $post->id)
+                ->get(['type'])
+                ->groupBy('type')
+                ->map(fn ($group) => count($group))
+                ->all();
+
+            $reactionCounts = [];
+            foreach (PostReaction::allowedTypes() as $reactionType) {
+                $reactionCounts[$reactionType] = (int) ($reactionCountsRaw[$reactionType] ?? 0);
+            }
+
+            $likesCount = array_sum($reactionCounts);
+
+            if ($hasLikesColumn) {
+                $post->update(['likes_count' => $likesCount]);
+            }
+
             $post->refresh();
-            $likesCount = (int) ($post->likes_count ?? 0);
         });
 
         return response()->json([
@@ -88,6 +110,8 @@ class PostReactionController extends Controller
                 'type' => $type,
                 'toggled_on' => $toggledOn,
                 'likes_count' => $likesCount,
+                'reaction_type_by_me' => $reactionTypeByMe,
+                'reaction_counts' => $reactionCounts,
             ],
         ]);
     }
@@ -98,21 +122,37 @@ class PostReactionController extends Controller
      */
     public function summary(Request $request, Post $post)
     {
-        $likedByMe = false;
+        $reactionTypeByMe = null;
         if ($request->user()) {
-            $likedByMe = PostReaction::query()
+            $myReaction = PostReaction::query()
                 ->where('post_id', (int) $post->id)
                 ->where('user_id', (int) $request->user()->id)
-                ->where('type', 'like')
-                ->exists();
+                ->first(['type']);
+            $reactionTypeByMe = $myReaction?->type ? (string) $myReaction->type : null;
         }
+
+        $reactionCountsRaw = PostReaction::query()
+            ->where('post_id', (int) $post->id)
+            ->get(['type'])
+            ->groupBy('type')
+            ->map(fn ($group) => count($group))
+            ->all();
+
+        $reactionCounts = [];
+        foreach (PostReaction::allowedTypes() as $reactionType) {
+            $reactionCounts[$reactionType] = (int) ($reactionCountsRaw[$reactionType] ?? 0);
+        }
+
+        $totalReactions = array_sum($reactionCounts);
 
         return response()->json([
             'success' => true,
             'data' => [
                 'post_id' => $post->id,
-                'likes_count' => (int) ($post->likes_count ?? 0),
-                'liked_by_me' => $likedByMe,
+                'likes_count' => $totalReactions,
+                'liked_by_me' => $reactionTypeByMe !== null,
+                'reaction_type_by_me' => $reactionTypeByMe,
+                'reaction_counts' => $reactionCounts,
             ],
         ]);
     }

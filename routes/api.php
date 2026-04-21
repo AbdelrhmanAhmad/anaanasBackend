@@ -32,6 +32,10 @@ Route::get("sections/categories/fet-subfields", [\App\Http\Controllers\Api\v1\Se
 Route::get("countries", [\App\Http\Controllers\Api\v1\SectionController::class, 'countries']);
 Route::get("cities", [\App\Http\Controllers\Api\v1\SectionController::class, 'cities']);
 
+// Follow status — public (returns is_following=false for guests)
+Route::get('sections/{section}/follow', [FollowController::class, 'sectionStatus'])->whereNumber('section');
+Route::get('categories/{category}/follow', [FollowController::class, 'categoryStatus'])->whereNumber('category');
+
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
@@ -104,10 +108,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('notifications/read-all', [NotificationController::class, 'markAllRead']);
     Route::post('notifications/{notification}/read', [NotificationController::class, 'markRead']);
 
-    // Follows
-    Route::get('sections/{section}/follow', [FollowController::class, 'sectionStatus'])->whereNumber('section');
+    // Follows (toggle endpoints require authentication; status is public above)
     Route::post('sections/{section}/follow', [FollowController::class, 'toggleSection'])->whereNumber('section');
-    Route::get('categories/{category}/follow', [FollowController::class, 'categoryStatus'])->whereNumber('category');
     Route::post('categories/{category}/follow', [FollowController::class, 'toggleCategory'])->whereNumber('category');
     Route::get('follows', [FollowController::class, 'myFollows']);
 });
@@ -125,7 +127,9 @@ Route::prefix('auth')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/me',     [AuthController::class, 'me']);
         Route::post('/logout',[AuthController::class, 'logout']);
-        Route::put('/profile', [AuthController::class, 'updateProfile']);
+        // Accept both PUT and POST: PHP does not populate $_FILES on PUT multipart
+        // requests, so the client POSTs multipart uploads to the same endpoint.
+        Route::match(['put', 'post'], '/profile', [AuthController::class, 'updateProfile']);
         Route::post('/change-password', [AuthController::class, 'changePassword']);
         Route::post('/request-account-deletion', [AuthController::class, 'requestAccountDeletion']);
         Route::post('/cancel-account-deletion', [AuthController::class, 'cancelAccountDeletion']);

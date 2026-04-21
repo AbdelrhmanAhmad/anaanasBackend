@@ -113,6 +113,44 @@ class SectionController extends Controller
         if ($request->filled('price_max') && Schema::hasColumn('posts', 'price')) {
             $postsQuery->where('price', '<=', (float) $request->get('price_max'));
         }
+        // Free-text search (title + description) with per-token AND matching
+        if ($request->filled('q')) {
+            $rawQ = trim((string) $request->get('q'));
+            if ($rawQ !== '') {
+                $hasTitle = Schema::hasColumn('posts', 'title');
+                $hasDescription = Schema::hasColumn('posts', 'description');
+
+                // Split on whitespace, keep tokens >= 2 chars (prevents noise), cap token count
+                $tokens = array_slice(
+                    array_values(array_filter(preg_split('/\s+/u', $rawQ) ?: [], function ($token) {
+                        return mb_strlen((string) $token) >= 2;
+                    })),
+                    0,
+                    6
+                );
+
+                if (count($tokens) === 0) {
+                    $tokens = [$rawQ];
+                }
+
+                foreach ($tokens as $token) {
+                    $like = '%' . str_replace(['%', '_'], ['\\%', '\\_'], $token) . '%';
+                    $postsQuery->where(function ($sub) use ($like, $hasTitle, $hasDescription) {
+                        if ($hasTitle) {
+                            $sub->where('title', 'like', $like);
+                        }
+                        if ($hasDescription) {
+                            $sub->orWhere('description', 'like', $like);
+                        }
+                        if (!$hasTitle && !$hasDescription) {
+                            // Fallback (unlikely): no searchable columns -> yield no results
+                            $sub->whereRaw('1 = 0');
+                        }
+                    });
+                }
+            }
+        }
+
         if ($request->filled('has_images') && Schema::hasTable('post_images')) {
             $hasImagesRaw = strtolower((string) $request->get('has_images'));
             $hasImages = in_array($hasImagesRaw, ['1', 'true', 'yes'], true)
@@ -279,28 +317,48 @@ class SectionController extends Controller
         if ($perPage <= 0) $perPage = 15;
         $posts = $postsQuery->paginate($perPage);
 
-        // Add liked_by_me from MongoDB (current state); likes_count remains on MySQL posts table.
+        // Add reaction info from MongoDB (current state).
         $items = collect($posts->items());
         $postIds = $items->pluck('id')->map(fn ($id) => (int) $id)->values()->all();
+        $emptyReactionCounts = collect(PostReaction::allowedTypes())->mapWithKeys(fn ($type) => [$type => 0])->all();
 
-        $likedByMeSet = [];
-        if (Auth::check() && count($postIds) > 0) {
-            $docs = PostReaction::query()
+        // Batch-load real per-post reaction aggregates so the frontend doesn't
+        // need to issue an extra /api/posts/{id}/reactions request per card.
+        $reactionsByMe = [];
+        $reactionCountsByPost = [];
+        if (count($postIds) > 0) {
+            if (Auth::check()) {
+                $myDocs = PostReaction::query()
+                    ->whereIn('post_id', $postIds)
+                    ->where('user_id', (int) Auth::id())
+                    ->get(['post_id', 'type']);
+                foreach ($myDocs as $doc) {
+                    $reactionsByMe[(int) $doc->post_id] = (string) $doc->type;
+                }
+            }
+
+            $allDocs = PostReaction::query()
                 ->whereIn('post_id', $postIds)
-                ->where('user_id', (int) Auth::id())
-                ->where('type', 'like')
-                ->get(['post_id']);
-
-            foreach ($docs as $doc) {
-                $likedByMeSet[(int) $doc->post_id] = true;
+                ->get(['post_id', 'type']);
+            foreach ($allDocs as $doc) {
+                $pid = (int) $doc->post_id;
+                $type = (string) $doc->type;
+                if (!isset($reactionCountsByPost[$pid])) {
+                    $reactionCountsByPost[$pid] = $emptyReactionCounts;
+                }
+                $reactionCountsByPost[$pid][$type] = ($reactionCountsByPost[$pid][$type] ?? 0) + 1;
             }
         }
 
         $payload = $posts->toArray();
-        $payload['data'] = $items->map(function (Post $p) use ($likedByMeSet) {
+        $payload['data'] = $items->map(function (Post $p) use ($reactionsByMe, $emptyReactionCounts, $reactionCountsByPost) {
             $arr = $p->toArray();
-            $arr['liked_by_me'] = (bool) ($likedByMeSet[(int) $p->id] ?? false);
-            $arr['likes_count'] = (int) ($arr['likes_count'] ?? 0);
+            $reactionTypeByMe = $reactionsByMe[(int) $p->id] ?? null;
+            $arr['liked_by_me'] = (bool) $reactionTypeByMe;
+            $arr['reaction_type_by_me'] = $reactionTypeByMe;
+            $counts = $reactionCountsByPost[(int) $p->id] ?? $emptyReactionCounts;
+            $arr['reaction_counts'] = $counts;
+            $arr['likes_count'] = (int) array_sum($counts);
             return $arr;
         })->values()->all();
 
@@ -417,6 +475,8 @@ class SectionController extends Controller
         // منشور جديد لا تعليقات عليه أصلاً.
         $payload = $post->toArray();
         $payload['liked_by_me'] = false;
+        $payload['reaction_type_by_me'] = null;
+        $payload['reaction_counts'] = collect(PostReaction::allowedTypes())->mapWithKeys(fn ($type) => [$type => 0])->all();
         $payload['likes_count'] = (int) ($payload['likes_count'] ?? 0);
         $payload['comments_count'] = 0;
 

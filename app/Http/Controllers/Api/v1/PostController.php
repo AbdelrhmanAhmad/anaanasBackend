@@ -77,13 +77,13 @@ class PostController extends Controller
             ]);
         }
 
-        $likedByMe = false;
+        $reactionTypeByMe = null;
         if (Auth::check()) {
-            $likedByMe = PostReaction::query()
+            $myReaction = PostReaction::query()
                 ->where('post_id', (int) $post->id)
                 ->where('user_id', (int) Auth::id())
-                ->where('type', 'like')
-                ->exists();
+                ->first(['type']);
+            $reactionTypeByMe = $myReaction?->type ? (string) $myReaction->type : null;
         }
 
         // MongoDB details (avoid eager loading cross-connection issues)
@@ -91,9 +91,24 @@ class PostController extends Controller
             ->where('post_id', (int) $post->id)
             ->first();
 
+        // Real per-type reaction counts (one Mongo query) so the details page
+        // renders with correct data immediately, no fallback fetch required.
+        $reactionCountsRaw = PostReaction::query()
+            ->where('post_id', (int) $post->id)
+            ->get(['type'])
+            ->groupBy('type')
+            ->map(fn ($group) => count($group))
+            ->all();
+        $reactionCounts = [];
+        foreach (PostReaction::allowedTypes() as $reactionType) {
+            $reactionCounts[$reactionType] = (int) ($reactionCountsRaw[$reactionType] ?? 0);
+        }
+
         $payload = $post->toArray();
-        $payload['liked_by_me'] = $likedByMe;
-        $payload['likes_count'] = (int) ($payload['likes_count'] ?? 0);
+        $payload['liked_by_me'] = $reactionTypeByMe !== null;
+        $payload['reaction_type_by_me'] = $reactionTypeByMe;
+        $payload['reaction_counts'] = $reactionCounts;
+        $payload['likes_count'] = (int) array_sum($reactionCounts);
         $payload['post_data'] = $postData ? $postData->toArray() : null;
 
         return response()->json([
@@ -281,6 +296,65 @@ class PostController extends Controller
             ];
         }
 
+        // Reaction type details (Facebook-like), based on post_like events within selected range.
+        $reactionTypes = PostReaction::allowedTypes();
+        $reactionByTypeMap = array_fill_keys($reactionTypes, 0);
+        $reactionDailyMap = [];
+
+        $reactionByTypeAgg = PostEvent::raw(function ($collection) use ($post, $startUtc, $endUtc) {
+            return $collection->aggregate([
+                ['$match' => [
+                    'post_id' => (int) $post->id,
+                    'event' => 'post_like',
+                    'created_at' => ['$gte' => $startUtc, '$lte' => $endUtc],
+                ]],
+                ['$group' => [
+                    '_id' => ['$ifNull' => ['$meta.type', 'like']],
+                    'count' => ['$sum' => 1],
+                ]],
+            ]);
+        });
+
+        foreach ($reactionByTypeAgg as $row) {
+            $type = strtolower((string) ($row->_id ?? 'like'));
+            if (! in_array($type, $reactionTypes, true)) {
+                continue;
+            }
+            $reactionByTypeMap[$type] = (int) ($row->count ?? 0);
+        }
+
+        $reactionDailyAgg = PostEvent::raw(function ($collection) use ($post, $startUtc, $endUtc) {
+            return $collection->aggregate([
+                ['$match' => [
+                    'post_id' => (int) $post->id,
+                    'event' => 'post_like',
+                    'created_at' => ['$gte' => $startUtc, '$lte' => $endUtc],
+                ]],
+                ['$addFields' => [
+                    'day' => [
+                        '$dateToString' => ['format' => '%Y-%m-%d', 'date' => '$created_at'],
+                    ],
+                    'reaction_type' => ['$ifNull' => ['$meta.type', 'like']],
+                ]],
+                ['$group' => [
+                    '_id' => ['day' => '$day', 'type' => '$reaction_type'],
+                    'count' => ['$sum' => 1],
+                ]],
+            ]);
+        });
+
+        foreach ($reactionDailyAgg as $row) {
+            $id = $row->_id ?? null;
+            $day = $this->bsonIdValue($id, 'day') ?? '';
+            $type = strtolower($this->bsonIdValue($id, 'type') ?? 'like');
+            if (! $day || ! in_array($type, $reactionTypes, true)) {
+                continue;
+            }
+
+            $reactionDailyMap[$day] = $reactionDailyMap[$day] ?? array_fill_keys($reactionTypes, 0);
+            $reactionDailyMap[$day][$type] = (int) ($row->count ?? 0);
+        }
+
         // Build complete daily array (fill missing days with zeros)
         $days = [];
         $cursor = (clone $from);
@@ -290,6 +364,7 @@ class PostController extends Controller
         }
 
         $daily = [];
+        $dailyReactionByType = [];
         foreach ($days as $day) {
             $counts = $dailyMap[$day] ?? [];
             $daily[] = [
@@ -304,6 +379,13 @@ class PostController extends Controller
                 'unlikes' => (int) ($counts['post_unlike'] ?? 0),
                 'comments' => (int) ($counts['post_comment'] ?? 0),
             ];
+
+            $reactionRow = ['date' => $day];
+            $dayReactionCounts = $reactionDailyMap[$day] ?? array_fill_keys($reactionTypes, 0);
+            foreach ($reactionTypes as $reactionType) {
+                $reactionRow[$reactionType] = (int) ($dayReactionCounts[$reactionType] ?? 0);
+            }
+            $dailyReactionByType[] = $reactionRow;
         }
 
         $totals = [
@@ -336,6 +418,13 @@ class PostController extends Controller
                 'breakdown' => $breakdown,
                 'top' => [
                     'user_agents' => $topUserAgents,
+                ],
+                'reactions' => [
+                    'by_type' => collect($reactionTypes)->map(fn ($type) => [
+                        'type' => $type,
+                        'count' => (int) ($reactionByTypeMap[$type] ?? 0),
+                    ])->values()->all(),
+                    'daily_by_type' => $dailyReactionByType,
                 ],
             ],
         ]);
@@ -728,25 +817,43 @@ class PostController extends Controller
         $items = collect($posts->items());
         $postIds = $items->pluck('id')->map(fn($id) => (int) $id)->values()->all();
 
-        // Get liked_by_me status
-        $likedByMeSet = [];
+        // Batch-load reaction data for every post in this page (one Mongo query each)
+        // to eliminate the N+1 request pattern where the frontend had to fetch
+        // /api/posts/{id}/reactions for every card.
+        $reactionsByMe = [];
+        $emptyReactionCounts = collect(PostReaction::allowedTypes())->mapWithKeys(fn ($type) => [$type => 0])->all();
+        $reactionCountsByPost = [];
         if (count($postIds) > 0) {
-            $docs = PostReaction::query()
+            $myDocs = PostReaction::query()
                 ->whereIn('post_id', $postIds)
                 ->where('user_id', (int) $user->id)
-                ->where('type', 'like')
-                ->get(['post_id']);
+                ->get(['post_id', 'type']);
+            foreach ($myDocs as $doc) {
+                $reactionsByMe[(int) $doc->post_id] = (string) $doc->type;
+            }
 
-            foreach ($docs as $doc) {
-                $likedByMeSet[(int) $doc->post_id] = true;
+            $allDocs = PostReaction::query()
+                ->whereIn('post_id', $postIds)
+                ->get(['post_id', 'type']);
+            foreach ($allDocs as $doc) {
+                $pid = (int) $doc->post_id;
+                $type = (string) $doc->type;
+                if (!isset($reactionCountsByPost[$pid])) {
+                    $reactionCountsByPost[$pid] = $emptyReactionCounts;
+                }
+                $reactionCountsByPost[$pid][$type] = ($reactionCountsByPost[$pid][$type] ?? 0) + 1;
             }
         }
 
         $payload = $posts->toArray();
-        $payload['data'] = $items->map(function (Post $p) use ($likedByMeSet) {
+        $payload['data'] = $items->map(function (Post $p) use ($reactionsByMe, $emptyReactionCounts, $reactionCountsByPost) {
             $arr = $p->toArray();
-            $arr['liked_by_me'] = (bool) ($likedByMeSet[(int) $p->id] ?? false);
-            $arr['likes_count'] = (int) ($arr['likes_count'] ?? 0);
+            $reactionTypeByMe = $reactionsByMe[(int) $p->id] ?? null;
+            $arr['liked_by_me'] = (bool) $reactionTypeByMe;
+            $arr['reaction_type_by_me'] = $reactionTypeByMe;
+            $counts = $reactionCountsByPost[(int) $p->id] ?? $emptyReactionCounts;
+            $arr['reaction_counts'] = $counts;
+            $arr['likes_count'] = (int) array_sum($counts);
             return $arr;
         })->values()->all();
 

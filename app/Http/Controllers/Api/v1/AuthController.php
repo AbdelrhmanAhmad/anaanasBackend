@@ -11,6 +11,8 @@ use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -96,21 +98,99 @@ class AuthController extends Controller
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
         }
 
-        // Add full URLs for avatar and cover_image
-        $userData = $user->toArray();
-        if ($user->avatar) {
-            $userData['avatar_url'] = \Storage::disk('public')->url($user->avatar);
-        }
-        if ($user->cover_image) {
-            $userData['cover_image_url'] = \Storage::disk('public')->url($user->cover_image);
-        }
-
         return response()->json([
             'success' => true,
             'data'    => [
-                'user' => $userData,
+                'user' => $this->userToArrayWithMedia($user),
             ],
         ]);
+    }
+
+    /**
+     * Resolve a stored media path to a public URL.
+     * - Full URLs (http/https) are returned as-is.
+     * - Paths stored via the new S3 flow (e.g. "upload/photos/...") resolve through the S3 disk.
+     * - Legacy paths written via the `public` disk still resolve through the public disk.
+     */
+    protected function resolveMediaUrl(?string $path): ?string
+    {
+        if (!$path) {
+            return null;
+        }
+        if (preg_match('/^https?:\/\//i', $path)) {
+            return $path;
+        }
+
+        try {
+            if (str_starts_with($path, 'upload/') || str_starts_with($path, 'avatars/') || str_starts_with($path, 'covers/')) {
+                // Files written with the new S3 flow (public-visibility object, path-only stored in DB)
+                return Storage::disk('s3')->url($path);
+            }
+            // Fallback for legacy entries stored via the "public" disk
+            return Storage::disk('public')->url($path);
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Build a serializable user payload, always including avatar_url/cover_image_url
+     * so the frontend can render images from S3 consistently.
+     */
+    protected function userToArrayWithMedia(User $user): array
+    {
+        $userData = $user->toArray();
+        $userData['avatar_url'] = $this->resolveMediaUrl($user->avatar);
+        $userData['cover_image_url'] = $this->resolveMediaUrl($user->cover_image);
+        return $userData;
+    }
+
+    /**
+     * Upload a profile media file (avatar or cover) to S3 and return the stored path.
+     * Mirrors the pattern used by PostController for post images.
+     */
+    protected function uploadProfileMediaToS3(\Illuminate\Http\UploadedFile $file, string $userId, string $kind): ?string
+    {
+        if (!$file->isValid()) {
+            return null;
+        }
+
+        $extension = $file->getClientOriginalExtension() ?: $file->guessExtension() ?: 'jpg';
+        $prefix = ($kind === 'avatar' ? 'avatar_' : 'cover_') . Str::random(12);
+        $path = 'upload/profiles/' . date('Y') . '/' . date('m') . '/' . $userId . '/' . $prefix . '.' . $extension;
+
+        Storage::disk('s3')->put(
+            $path,
+            fopen($file->getRealPath(), 'r'),
+            [
+                'visibility' => 'public',
+                'ContentType' => $file->getMimeType(),
+                'ContentDisposition' => 'inline',
+            ]
+        );
+
+        return $path;
+    }
+
+    /**
+     * Best-effort cleanup of the previous media file to avoid orphan objects in S3.
+     * Skips legacy public-disk paths (older entries) to avoid accidental local deletions.
+     */
+    protected function deleteProfileMediaIfS3(?string $path): void
+    {
+        if (!$path) {
+            return;
+        }
+        if (preg_match('/^https?:\/\//i', $path)) {
+            return;
+        }
+        try {
+            if (str_starts_with($path, 'upload/') || str_starts_with($path, 'avatars/') || str_starts_with($path, 'covers/')) {
+                Storage::disk('s3')->delete($path);
+            }
+        } catch (\Throwable $e) {
+            // swallow — cleanup is best-effort
+        }
     }
 
     /**
@@ -209,29 +289,29 @@ class AuthController extends Controller
             'allow_team_invites' => 'sometimes|boolean',
         ]);
 
-        // Handle avatar file upload
+        // Handle avatar file upload (stored on S3)
         if ($request->hasFile('avatar_file')) {
-            $avatarFile = $request->file('avatar_file');
-            if ($avatarFile->isValid()) {
-                // Delete old avatar if exists
-                if ($user->avatar && \Storage::disk('public')->exists($user->avatar)) {
-                    \Storage::disk('public')->delete($user->avatar);
-                }
-                $avatarPath = $avatarFile->store('avatars', 'public');
-                $validated['avatar'] = $avatarPath;
+            $newAvatarPath = $this->uploadProfileMediaToS3(
+                $request->file('avatar_file'),
+                (string) $user->id,
+                'avatar'
+            );
+            if ($newAvatarPath) {
+                $this->deleteProfileMediaIfS3($user->avatar);
+                $validated['avatar'] = $newAvatarPath;
             }
         }
 
-        // Handle cover image file upload
+        // Handle cover image file upload (stored on S3)
         if ($request->hasFile('cover_image_file')) {
-            $coverFile = $request->file('cover_image_file');
-            if ($coverFile->isValid()) {
-                // Delete old cover if exists
-                if ($user->cover_image && \Storage::disk('public')->exists($user->cover_image)) {
-                    \Storage::disk('public')->delete($user->cover_image);
-                }
-                $coverPath = $coverFile->store('covers', 'public');
-                $validated['cover_image'] = $coverPath;
+            $newCoverPath = $this->uploadProfileMediaToS3(
+                $request->file('cover_image_file'),
+                (string) $user->id,
+                'cover'
+            );
+            if ($newCoverPath) {
+                $this->deleteProfileMediaIfS3($user->cover_image);
+                $validated['cover_image'] = $newCoverPath;
             }
         }
 
@@ -254,23 +334,14 @@ class AuthController extends Controller
 
         $user->update($validated);
 
-        // Refresh user to get updated data
+        // Refresh user to get updated data and include resolved media URLs
         $user->refresh();
-
-        // Add full URLs for avatar and cover_image
-        $userData = $user->toArray();
-        if ($user->avatar) {
-            $userData['avatar_url'] = \Storage::disk('public')->url($user->avatar);
-        }
-        if ($user->cover_image) {
-            $userData['cover_image_url'] = \Storage::disk('public')->url($user->cover_image);
-        }
 
         return response()->json([
             'success' => true,
             'message' => 'Profile updated successfully',
             'data' => [
-                'user' => $userData,
+                'user' => $this->userToArrayWithMedia($user),
             ],
         ]);
     }

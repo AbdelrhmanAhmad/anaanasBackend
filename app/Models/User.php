@@ -8,12 +8,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
+
+    /**
+     * Ensure every serialization of the user (including nested relations such
+     * as Comment->user or Post->user) carries the resolved S3/CloudFront URLs
+     * so the frontend never has to deal with bare storage paths.
+     */
+    protected $appends = ['avatar_url', 'cover_image_url'];
 
     // public $incrementing = false;
 
@@ -71,5 +79,46 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token): void
     {
         $this->notify(new ResetPasswordNotification($token));
+    }
+
+    /**
+     * Accessor: fully-qualified avatar URL resolved against the correct disk.
+     * Mirrors the logic used in AuthController::resolveMediaUrl.
+     */
+    public function getAvatarUrlAttribute(): ?string
+    {
+        return $this->resolveMediaUrlAttribute($this->avatar);
+    }
+
+    /**
+     * Accessor: fully-qualified cover image URL.
+     */
+    public function getCoverImageUrlAttribute(): ?string
+    {
+        return $this->resolveMediaUrlAttribute($this->cover_image);
+    }
+
+    /**
+     * Resolve a stored media path to a public URL:
+     * - Full URLs (http/https) pass through untouched.
+     * - Paths written by the new S3 flow ("upload/", "avatars/", "covers/") go through the S3 disk.
+     * - Legacy paths fall back to the "public" disk for backward compatibility.
+     */
+    protected function resolveMediaUrlAttribute(?string $path): ?string
+    {
+        if (!$path) {
+            return null;
+        }
+        if (preg_match('/^https?:\/\//i', $path)) {
+            return $path;
+        }
+        try {
+            if (str_starts_with($path, 'upload/') || str_starts_with($path, 'avatars/') || str_starts_with($path, 'covers/')) {
+                return Storage::disk('s3')->url($path);
+            }
+            return Storage::disk('public')->url($path);
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
 }
