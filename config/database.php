@@ -69,9 +69,9 @@ return [
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
 
-            'database' =>'anaanas_db',
-            'username' =>'anaanas_@user2',
-            'password' =>'P@$$@user24#rm',
+            'database' =>'anaanas_olddb',
+            'username' =>'anaanas_olduser',
+            'password' =>'ana26#25DB$ols4',
 
 
             'unix_socket' => env('DB_SOCKET', ''),

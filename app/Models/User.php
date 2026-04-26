@@ -43,6 +43,9 @@ class User extends Authenticatable
         'avatar',
         'cover_image',
         'allow_team_invites',
+        'old_system_password',
+        'try_login_in_new_system',
+        'is_blocked',
     ];
 
     /**
@@ -65,12 +68,19 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'try_login_in_new_system' => 'boolean',
+            'is_blocked' => 'boolean',
         ];
     }
 
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class, 'user_id');
+    }
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class, 'user_id');
     }
 
     /**

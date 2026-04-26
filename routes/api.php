@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\AuctionController;
+use App\Http\Controllers\Api\v1\HomeSliderController;
 use App\Http\Controllers\Api\v1\HomeStatsController;
 use App\Http\Controllers\Api\v1\ChatController;
 use App\Http\Controllers\Api\v1\CommentController;
@@ -22,6 +23,7 @@ Route::get('/user', function (Request $request) {
 
 Route::get('home/section-momentum', [HomeStatsController::class, 'sectionMomentum']);
 Route::get('home/trending-posts', [HomeStatsController::class, 'trendingPosts']);
+Route::get('home/sliders', [HomeSliderController::class, 'index']);
 
 Route::get("sections", [\App\Http\Controllers\Api\v1\SectionController::class, 'index']);
 Route::get("sections/categories", [\App\Http\Controllers\Api\v1\SectionController::class, 'SectionCategories']);
@@ -80,8 +82,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('chats/{chat}', [ChatController::class, 'show']);
     // Mark chat as read
     Route::post('chats/{chat}/read', [ChatController::class, 'markAsRead']);
-    // Delete chat
+    // Delete chat (per-user soft delete)
     Route::delete('chats/{chat}', [ChatController::class, 'delete']);
+    // Per-user clear-history cutoff
+    Route::post('chats/{chat}/clear', [ChatController::class, 'clear']);
+    // Close conversation (read-only for both)
+    Route::post('chats/{chat}/close', [ChatController::class, 'close']);
+    Route::post('chats/{chat}/reopen', [ChatController::class, 'reopen']);
+    // Block / unblock the other participant
+    Route::post('chats/{chat}/block', [ChatController::class, 'block']);
+    Route::post('chats/{chat}/unblock', [ChatController::class, 'unblock']);
+    // Report conversation for admin review
+    Route::post('chats/{chat}/report', [ChatController::class, 'report']);
+    // Typing indicator (lightweight — broadcast via WS)
+    Route::post('chats/{chat}/typing', [ChatController::class, 'typing']);
 
     // Messages
     Route::get('chats/{chat}/messages', [MessageController::class, 'index']);

@@ -132,7 +132,11 @@ class CommentController extends Controller
             // ignore analytics failures
         }
 
-        if ((int) $post->user_id !== (int) $user->id) {
+        // إشعار صاحب الإعلان عند تعليق جديد (وليس عند الرد على تعليق)
+        if (
+            empty($validated['parent_id']) &&
+            (int) $post->user_id !== (int) $user->id
+        ) {
             UserNotification::create([
                 'user_id' => (int) $post->user_id,
                 'type' => 'post.comment',
@@ -145,8 +149,32 @@ class CommentController extends Controller
                     'post_id' => (int) $post->id,
                     'comment_id' => (int) $comment->id,
                     'from_user_id' => (int) $user->id,
+                    'from_user_name' => (string) ($user->name ?? ''),
                 ],
             ]);
+        }
+
+        // إشعار صاحب التعليق الأب عند الرد على تعليقه
+        if (!empty($validated['parent_id']) && isset($parent)) {
+            $parentOwnerId = (int) $parent->user_id;
+            if ($parentOwnerId > 0 && $parentOwnerId !== (int) $user->id) {
+                UserNotification::create([
+                    'user_id' => $parentOwnerId,
+                    'type' => 'comment.reply',
+                    'title_ar' => 'رد جديد على تعليقك',
+                    'title_en' => 'New reply to your comment',
+                    'body_ar' => mb_substr((string) $validated['body'], 0, 180),
+                    'body_en' => mb_substr((string) $validated['body'], 0, 180),
+                    'url' => '/post/' . (int) $post->id,
+                    'data' => [
+                        'post_id' => (int) $post->id,
+                        'parent_comment_id' => (int) $parent->id,
+                        'comment_id' => (int) $comment->id,
+                        'from_user_id' => (int) $user->id,
+                        'from_user_name' => (string) ($user->name ?? ''),
+                    ],
+                ]);
+            }
         }
 
         return response()->json([

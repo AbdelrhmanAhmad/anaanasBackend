@@ -6,6 +6,9 @@ use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
 use App\Filament\Resources\Users\Pages\ViewUser;
+use App\Filament\Resources\Users\RelationManagers\AccessTokensRelationManager;
+use App\Filament\Resources\Users\RelationManagers\UserCommentsRelationManager;
+use App\Filament\Resources\Users\RelationManagers\UserPostsRelationManager;
 use App\Filament\Resources\Users\Schemas\UserForm;
 use App\Filament\Resources\Users\Schemas\UserInfolist;
 use App\Filament\Resources\Users\Tables\UsersTable;
@@ -20,9 +23,13 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserCircle;
 
     protected static ?string $recordTitleAttribute = 'name';
+
+    protected static \UnitEnum|string|null $navigationGroup = 'Platform';
+
+    protected static ?int $navigationSort = 20;
 
     public static function form(Schema $schema): Schema
     {
@@ -42,7 +49,9 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            UserPostsRelationManager::class,
+            UserCommentsRelationManager::class,
+            AccessTokensRelationManager::class,
         ];
     }
 

@@ -26,11 +26,11 @@ class Country extends Model
 
 
 
-protected $appends =['flag_full_oath'] ;
+protected $appends =['flag_full_path'] ;
 
 
 
-public function getFlagFullOathAttribute()
+public function getFlagFullPathAttribute()
 {
     return $this->flag ? asset("storage/".$this->flag ) : null;
 

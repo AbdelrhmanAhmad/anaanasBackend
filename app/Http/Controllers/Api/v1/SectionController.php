@@ -19,6 +19,7 @@ use App\Models\SectionFollow;
 use App\Models\Section;
 use App\Models\UserNotification;
 use App\Models\User;
+use App\Services\RealtimeBroadcaster;
 use Filament\Forms\Components\Field;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -301,16 +302,17 @@ class SectionController extends Controller
             $postsQuery->whereIn('id', $matchedIds);
         }
 
-        // Sorting
+        // Sorting (prioritize publish_date, then created_at)
+        $newestOrderExpr = "COALESCE(publish_date, created_at)";
         $sort = (string) $request->get('sort', 'newest');
         if ($sort === 'oldest') {
-            $postsQuery->orderBy('created_at', 'asc');
+            $postsQuery->orderByRaw($newestOrderExpr . ' asc');
         } elseif ($sort === 'price_asc' && Schema::hasColumn('posts', 'price')) {
-            $postsQuery->orderBy('price', 'asc')->orderBy('created_at', 'desc');
+            $postsQuery->orderBy('price', 'asc')->orderByRaw($newestOrderExpr . ' desc');
         } elseif ($sort === 'price_desc' && Schema::hasColumn('posts', 'price')) {
-            $postsQuery->orderBy('price', 'desc')->orderBy('created_at', 'desc');
+            $postsQuery->orderBy('price', 'desc')->orderByRaw($newestOrderExpr . ' desc');
         } else {
-            $postsQuery->orderBy('created_at', 'desc');
+            $postsQuery->orderByRaw($newestOrderExpr . ' desc');
         }
 
         $perPage = (int) ($request->get('per_page') ?? 15);
@@ -481,6 +483,37 @@ class SectionController extends Controller
         $payload['comments_count'] = 0;
 
         $this->notifyFollowersAboutNewPost($post, (int) Auth::id());
+
+        // Broadcast to country channel so all clients on the same subdomain
+        // get a realtime "new post added" alert. We only push a minimal pointer
+        // here; the client fetches the full record via /api/posts/{id} so it
+        // gets the same shape used by feed listings.
+        try {
+            // Resolve country ISO code (used as the websocket channel key) lazily
+            // so we never break post creation even if the relation is missing.
+            $countryCode = '';
+            if (! empty($post->country_id)) {
+                $country = Country::find((int) $post->country_id);
+                if ($country) {
+                    $countryCode = strtolower((string) ($country->iso2 ?: $country->iso_code ?: ''));
+                }
+            }
+            $authorName  = $authUser?->name ?? null;
+            RealtimeBroadcaster::publishToCountry($countryCode, 'post.created', [
+                'post_id'      => (int) $post->id,
+                'section_id'   => (int) ($post->section_id ?? 0),
+                'category_id'  => (int) ($post->category_id ?? 0),
+                'country_id'   => (int) ($post->country_id ?? 0),
+                'country_code' => $countryCode ?: null,
+                'title'        => (string) ($post->title ?? ''),
+                'author_id'    => (int) ($post->user_id ?? 0),
+                'author_name'  => $authorName,
+                'created_at'   => optional($post->created_at)->toIso8601String(),
+                'url'          => '/post/' . (int) $post->id,
+            ]);
+        } catch (\Throwable $e) {
+            // best-effort: never let realtime errors break post creation
+        }
 
         return response()->json([
             'success' => true,

@@ -3,11 +3,15 @@
 namespace App\Filament\Resources\Users\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Schema;
 
 class UsersTable
 {
@@ -15,20 +19,42 @@ class UsersTable
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('username')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('mobile')
                     ->searchable(),
-                TextColumn::make('mobile_verified_at')
-                    ->searchable(),
-                TextColumn::make('mobile_verified')
-                    ->searchable(),
                 TextColumn::make('email')
-                    ->label('Email address')
+                    ->label('Email')
                     ->searchable(),
+                IconColumn::make('is_blocked')
+                    ->label('Blocked')
+                    ->boolean(),
+                TextColumn::make('posts_count')
+                    ->counts('posts')
+                    ->label('Posts')
+                    ->sortable(),
+                TextColumn::make('comments_count')
+                    ->counts('comments')
+                    ->label('Comments')
+                    ->sortable()
+                    ->visible(fn (): bool => Schema::hasTable('comments')),
+                TextColumn::make('tokens_count')
+                    ->counts('tokens')
+                    ->label('API tokens')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('email_verified_at')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->placeholder('—')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -39,11 +65,16 @@ class UsersTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                TernaryFilter::make('is_blocked')
+                    ->label('Blocked')
+                    ->placeholder('All users')
+                    ->trueLabel('Blocked only')
+                    ->falseLabel('Active only'),
             ])
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

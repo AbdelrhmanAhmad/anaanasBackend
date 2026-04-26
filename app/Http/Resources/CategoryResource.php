@@ -11,11 +11,13 @@ class CategoryResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $icon = explode('/' ,$this->icon ) ;
+        $icon =  end($icon);
         return [
             'id' => $this->id,
             'slug' => $this->slug,
             'name' => $this->name,
-            'icon' =>"https://eg.anaanas.com/content/uploads/" . $this->icon,
+            'icon' =>asset('olduploads/'.$icon),
 
             'image' => $this->image,
             'is_active' => $this->is_active,

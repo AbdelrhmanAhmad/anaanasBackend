@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'realtime' => [
+        'publish_url' => env('REALTIME_PUBLISH_URL', 'http://127.0.0.1:6001/publish'),
+        'secret' => env('REALTIME_PUBLISH_SECRET', ''),
+    ],
+
 ];

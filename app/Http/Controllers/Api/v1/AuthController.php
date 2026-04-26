@@ -8,6 +8,7 @@ use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthRegisterRequest;
 use App\Http\Requests\AuthResetPasswordRequest;
 use App\Models\User;
+use App\Models\UserNotification;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -38,6 +39,21 @@ class AuthController extends Controller
         // إنشاء توكن لـ NextAuth / الواجهات
         $token = $user->createToken('anaanass-web')->plainTextToken;
 
+        $displayName = trim((string) ($user->name ?? ''));
+        $this->notifyUser($user, [
+            'type' => 'auth.welcome',
+            'title_ar' => 'مرحباً بك في أناناس!',
+            'title_en' => 'Welcome to ANANAS!',
+            'body_ar' => $displayName !== ''
+                ? 'أهلاً ' . mb_substr($displayName, 0, 60) . '! سعدنا بانضمامك. ابدأ الآن باستكشاف المنصة وأضف أول إعلان لك.'
+                : 'سعدنا بانضمامك. ابدأ الآن باستكشاف المنصة وأضف أول إعلان لك.',
+            'body_en' => $displayName !== ''
+                ? 'Hi ' . mb_substr($displayName, 0, 60) . '! Glad to have you on board. Start exploring and post your first listing.'
+                : 'Glad to have you on board. Start exploring and post your first listing.',
+            'url' => '/',
+            'data' => $this->authNotificationContext($request),
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => 'User registered successfully',
@@ -52,19 +68,68 @@ class AuthController extends Controller
     {
         $data = $request->validated();
 
-        // تحديد هل هنسجل بالبريد أو الموبايل
-        $field = $data['email'] ? 'email' : 'mobile';
-        $value = $data[$field];
+        // تحديد هل هنسجل بالبريد أو الموبايل بشكل آمن حتى لو أحد الحقول غير مُرسل
+        $email = trim((string) ($data['email'] ?? ''));
+        $mobile = trim((string) ($data['mobile'] ?? ''));
+        $mobile = $mobile !== '' ? preg_replace('/\s+/', '', $mobile) : '';
 
-        if (!Auth::attempt([$field => $value, 'password' => $data['password']])) {
+        $field = $email !== '' ? 'email' : 'mobile';
+        $value = $field === 'email' ? $email : $mobile;
+
+        // check old sys login  useing old_system_password
+        $user = User::where($field, $value)->first();
+        if (!$user){
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid credentials',
             ], 422);
+        }else{
+            $user->update([
+                'try_login_in_new_system' =>true,
+            ]) ;
+            if ($user->old_system_password ){
+                // old  login php smarty Sengen platform
+                if (!password_verify($request->password, $user->old_system_password)) {
+                    /* check brute-force attack detection  */
+                    if (!Auth::attempt([$field => $value, 'password' => $data['password']])) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Invalid credentials',
+                        ], 422);
+                    }
+                }else{
+                    $user->update([
+                        'old_system_password' => null,
+                        'password' => $request->password,
+                    ]) ;
+                    Auth::login($user);
+                }
+            }else{
+
+                if (!Auth::attempt([$field => $value, 'password' => $data['password']])) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Invalid credentials',
+                    ], 422);
+                }
+
+
+            }
         }
+
+
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
+
+        if ($user->is_blocked) {
+            Auth::logout();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'This account has been suspended.',
+            ], 403);
+        }
 
         // Cancel any pending account deletion request if user logs in within grace period
         $deletionRequest = \App\Models\AccountDeletionRequest::where('user_id', $user->id)
@@ -80,6 +145,21 @@ class AuthController extends Controller
         // $user->tokens()->delete();
 
         $token = $user->createToken('anaanass-web')->plainTextToken;
+
+        $displayName = trim((string) ($user->name ?? ''));
+        $this->notifyUser($user, [
+            'type' => 'auth.login',
+            'title_ar' => $displayName !== ''
+                ? 'أهلاً بعودتك، ' . mb_substr($displayName, 0, 60) . '!'
+                : 'أهلاً بعودتك!',
+            'title_en' => $displayName !== ''
+                ? 'Welcome back, ' . mb_substr($displayName, 0, 60) . '!'
+                : 'Welcome back!',
+            'body_ar' => 'تم تسجيل دخولك بنجاح. إن لم تكن أنت، يُرجى تغيير كلمة المرور فوراً.',
+            'body_en' => 'You signed in successfully. If this wasn’t you, please change your password immediately.',
+            'url' => '/',
+            'data' => $this->authNotificationContext($request),
+        ]);
 
         return response()->json([
             'success' => true,
@@ -104,6 +184,39 @@ class AuthController extends Controller
                 'user' => $this->userToArrayWithMedia($user),
             ],
         ]);
+    }
+
+    /**
+     * Persist an in-app notification for the user.
+     * Best-effort: never throws — auth flows must not fail because of a notification write.
+     */
+    protected function notifyUser(?User $user, array $payload): void
+    {
+        if (!$user || !$user->id) {
+            return;
+        }
+        try {
+            UserNotification::create(array_merge([
+                'user_id' => (int) $user->id,
+                'is_read' => false,
+            ], $payload));
+        } catch (\Throwable $e) {
+            // swallow — notifications are non-critical for auth flows
+        }
+    }
+
+    /**
+     * Build a request fingerprint (IP + UA) we can attach to security-sensitive
+     * notifications so users can audit suspicious activity later.
+     */
+    protected function authNotificationContext(Request $request): array
+    {
+        $ua = (string) $request->header('User-Agent', '');
+        return [
+            'ip' => (string) $request->ip(),
+            'user_agent' => $ua !== '' ? mb_substr($ua, 0, 255) : null,
+            'at' => now()->toIso8601String(),
+        ];
     }
 
     /**
@@ -213,6 +326,18 @@ class AuthController extends Controller
             ], 422);
         }
 
+        // Notify only after a real reset link was dispatched.
+        $resetUser = User::where('email', $data['email'])->first();
+        $this->notifyUser($resetUser, [
+            'type' => 'auth.password_reset_requested',
+            'title_ar' => 'طلب إعادة تعيين كلمة المرور',
+            'title_en' => 'Password reset requested',
+            'body_ar' => 'استلمنا طلب إعادة تعيين كلمة المرور لحسابك وأرسلنا الرابط إلى بريدك الإلكتروني. إن لم تكن أنت، تجاهل الرسالة وأمّن حسابك.',
+            'body_en' => 'We received a request to reset your password and sent the link to your email. If this wasn’t you, ignore it and secure your account.',
+            'url' => '/auth/forgot-pass',
+            'data' => $this->authNotificationContext($request),
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => __('passwords.sent'),
@@ -225,10 +350,12 @@ class AuthController extends Controller
     public function resetPassword(AuthResetPasswordRequest $request)
     {
         $data = $request->validated();
-        $status = Password::reset($data, function ($user, $password) {
+        $resetUser = null;
+        $status = Password::reset($data, function ($user, $password) use (&$resetUser) {
             $user->forceFill([
                 'password' => \Hash::make($password),
             ])->save();
+            $resetUser = $user;
         });
 
         if ($status !== Password::PASSWORD_RESET) {
@@ -244,6 +371,21 @@ class AuthController extends Controller
             ], 422);
         }
 
+        // Fallback: re-fetch the user model in case the broker passed a base contract.
+        if (!($resetUser instanceof User)) {
+            $resetUser = User::where('email', $data['email'])->first();
+        }
+
+        $this->notifyUser($resetUser, [
+            'type' => 'auth.password_changed',
+            'title_ar' => 'تم تغيير كلمة المرور بنجاح',
+            'title_en' => 'Password changed successfully',
+            'body_ar' => 'تم تحديث كلمة المرور لحسابك. إن لم تكن أنت من قام بهذا الإجراء، يُرجى التواصل مع الدعم فوراً.',
+            'body_en' => 'Your account password has been updated. If this wasn’t you, please contact support immediately.',
+            'url' => '/auth/sign-in',
+            'data' => $this->authNotificationContext($request),
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => __('passwords.reset'),
@@ -254,6 +396,18 @@ class AuthController extends Controller
     {
         /** @var \App\Models\User $user */
         $user = $request->user();
+
+        // Persist the logout notification BEFORE revoking the token
+        // so the next session picks it up in the bell.
+        $this->notifyUser($user, [
+            'type' => 'auth.logout',
+            'title_ar' => 'تم تسجيل الخروج',
+            'title_en' => 'Logged out',
+            'body_ar' => 'تم تسجيل خروجك بنجاح. أراك قريباً!',
+            'body_en' => 'You have been logged out successfully. See you soon!',
+            'url' => '/auth/sign-in',
+            'data' => $this->authNotificationContext($request),
+        ]);
 
         // حذف التوكن الحالي فقط
         $user->currentAccessToken()?->delete();

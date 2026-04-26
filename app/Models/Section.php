@@ -31,6 +31,17 @@ class Section extends Model
                 $array[$attribute] = $this->getTranslation($attribute, app()->getLocale());
             }
         }
+
+
+        if (isset($array["icon"]) && $array["icon"]){
+            $array["icon_full_path"] =  $array["icon"] ? \Storage::disk('s3')->url($array["icon"]):null;
+        }
+
+        if (isset($array["image"]) && $array["image"]){
+            $array["image_full_path"] =  $array["image"] ? \Storage::disk('s3')->url($array["image"]):null;
+        }
+
+
         return $array;
     }
 

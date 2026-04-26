@@ -29,7 +29,13 @@ class Post extends Model
      'post_type',
      'main_image',
      'location',
+     'publish_date',
     ] ;
+
+    protected $casts = [
+        'publish_date' => 'datetime',
+        'location' => 'array',
+    ];
 
     public function country(): BelongsTo
     {
