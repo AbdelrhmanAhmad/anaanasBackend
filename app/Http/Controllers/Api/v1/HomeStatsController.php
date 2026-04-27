@@ -8,6 +8,7 @@ use App\Models\Post;
 use App\Models\PostReaction;
 use App\Models\Section;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
 class HomeStatsController extends Controller
@@ -18,21 +19,34 @@ class HomeStatsController extends Controller
      */
     public function sectionMomentum(Request $request)
     {
-        $land = $request->get('land');
-        if ($land) {
-            app()->setLocale($land);
-        }
-
+        $land = (string) ($request->get('land') ?? '');
         $countryId = $request->filled('country_id') ? (int) $request->get('country_id') : null;
+        $cacheKey = 'api:home:section-momentum:v1:'.($countryId ?? 'all').':'.($land !== '' ? $land : '_');
 
-        if (! Schema::hasColumn('posts', 'created_at')) {
-            return response()->json([
-                'success' => true,
-                'data' => [],
-                'meta' => ['reason' => 'posts.created_at_unavailable'],
-            ]);
-        }
+        $payload = Cache::remember($cacheKey, 90, function () use ($land, $countryId) {
+            if ($land !== '') {
+                app()->setLocale($land);
+            }
 
+            if (! Schema::hasColumn('posts', 'created_at')) {
+                return [
+                    'success' => true,
+                    'data' => [],
+                    'meta' => ['reason' => 'posts.created_at_unavailable'],
+                ];
+            }
+
+            return $this->computeSectionMomentumPayload($countryId);
+        });
+
+        return response()->json($payload);
+    }
+
+    /**
+     * @return array{success: true, data: array<int, array<string, mixed>>}
+     */
+    private function computeSectionMomentumPayload(?int $countryId): array
+    {
         $now = now();
         $currentStart = $now->copy()->subDays(30);
         $previousStart = $now->copy()->subDays(60);
@@ -118,10 +132,10 @@ class HomeStatsController extends Controller
             ];
         }
 
-        return response()->json([
+        return [
             'success' => true,
             'data' => $data,
-        ]);
+        ];
     }
 
     /**
@@ -129,14 +143,27 @@ class HomeStatsController extends Controller
      */
     public function trendingPosts(Request $request)
     {
-        $land = $request->get('land');
-        if ($land) {
-            app()->setLocale($land);
-        }
-
+        $land = (string) ($request->get('land') ?? '');
         $countryId = $request->filled('country_id') ? (int) $request->get('country_id') : null;
         $limit = min(20, max(1, (int) ($request->get('limit') ?? 6)));
+        $cacheKey = 'api:home:trending-posts:v1:'.($countryId ?? 'all').':'.($land !== '' ? $land : '_').':'.$limit;
 
+        $payload = Cache::remember($cacheKey, 90, function () use ($land, $countryId, $limit) {
+            if ($land !== '') {
+                app()->setLocale($land);
+            }
+
+            return $this->computeTrendingPostsPayload($countryId, $limit);
+        });
+
+        return response()->json($payload);
+    }
+
+    /**
+     * @return array{success: true, data: array<int, array<string, mixed>>}
+     */
+    private function computeTrendingPostsPayload(?int $countryId, int $limit): array
+    {
         $q = Post::query()
             ->with(['section', 'category'])
             ->when($countryId !== null && Schema::hasColumn('posts', 'country_id'), fn ($qq) => $qq->where('country_id', $countryId));
@@ -153,7 +180,7 @@ class HomeStatsController extends Controller
         $posts = $q->get();
 
         if ($posts->isEmpty()) {
-            return response()->json(['success' => true, 'data' => []]);
+            return ['success' => true, 'data' => []];
         }
 
         $postIds = $posts->pluck('id')->map(fn ($id) => (int) $id)->values()->all();
@@ -216,9 +243,9 @@ class HomeStatsController extends Controller
         usort($scored, fn ($a, $b) => $b['score'] <=> $a['score']);
         $scored = array_slice($scored, 0, $limit);
 
-        return response()->json([
+        return [
             'success' => true,
             'data' => array_values($scored),
-        ]);
+        ];
     }
 }

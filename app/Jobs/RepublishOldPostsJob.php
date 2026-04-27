@@ -11,6 +11,7 @@ class RepublishOldPostsJob
      * Re-publish the oldest 3 posts per country by bumping publish_date.
      * IDs and created_at stay unchanged.
      */
+
     public function handle(): void
     {
         $now = now()->tz("Asia/Amman");
@@ -24,7 +25,10 @@ class RepublishOldPostsJob
                     ->where(function ($q) {
                         $q->whereNull('post_type')->orWhere('post_type', 'listing');
                     })
+//                    ->whereHas('images')
+//                    ->whereNotNull('main_image')
                     ->orderByRaw('COALESCE(publish_date, created_at) asc')
+                    ->where('created_at', '>','2024-01-01 00:00:00')
                     ->limit(3)
                     ->pluck('id');
 
@@ -38,5 +42,6 @@ class RepublishOldPostsJob
                         'publish_date' => $now,
                     ]);
             });
+
     }
 }

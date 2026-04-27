@@ -104,6 +104,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Update post (owner only)
     Route::post('posts/{post}', [PostController::class, 'update'])->whereNumber('post');
+    Route::delete('posts/{post}', [PostController::class, 'delete'])->whereNumber('post');
     // Delete post image (owner only)
     Route::delete('posts/{post}/images/{image}', [PostController::class, 'deleteImage'])
         ->whereNumber('post')

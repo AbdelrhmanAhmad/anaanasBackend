@@ -13,6 +13,7 @@ Artisan::command('inspire', function () {
 Schedule::command('accounts:delete-expired')->daily();
 
 // Re-publish oldest listings per country to keep feed fresh.
-Schedule::call(fn () => app(RepublishOldPostsJob::class)->handle())->everyFifteenMinutes();
+Schedule::call(fn () => app(RepublishOldPostsJob::class)->handle())
+    ->everyFifteenMinutes();
 
 

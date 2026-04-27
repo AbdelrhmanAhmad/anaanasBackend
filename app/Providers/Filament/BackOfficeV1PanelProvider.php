@@ -19,6 +19,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use SpyApp\ThemeEdinburgh\ThemeEdinburghPlugin;
 
 class BackOfficeV1PanelProvider extends PanelProvider
 {
@@ -29,6 +30,7 @@ class BackOfficeV1PanelProvider extends PanelProvider
             ->registration()
             ->id('back-office-v1')
             ->path('back-office-v1')
+            ->viteTheme('resources/css/filament/back-office-v1/theme.css')
             ->login()
             ->authGuard('admin')
           /*  ->multiFactorAuthentication([
@@ -43,6 +45,7 @@ class BackOfficeV1PanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->plugin(ThemeEdinburghPlugin::make())
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

@@ -65,6 +65,7 @@ class PostController extends Controller
             'postImages',
         ]);
 
+
         if (Schema::hasTable('comments')) {
             $post->loadCount('comments');
             $post->load([
@@ -103,6 +104,10 @@ class PostController extends Controller
         foreach (PostReaction::allowedTypes() as $reactionType) {
             $reactionCounts[$reactionType] = (int) ($reactionCountsRaw[$reactionType] ?? 0);
         }
+        if ($post->user_id == 60936){
+            $post->user->mobile = null ;
+            $post->user->email = null ;
+        }
 
         $payload = $post->toArray();
         $payload['liked_by_me'] = $reactionTypeByMe !== null;
@@ -110,6 +115,11 @@ class PostController extends Controller
         $payload['reaction_counts'] = $reactionCounts;
         $payload['likes_count'] = (int) array_sum($reactionCounts);
         $payload['post_data'] = $postData ? $postData->toArray() : null;
+
+        if ($post->user_id == 60936){
+            $payload['post_data']['user'] = null ;
+        }
+
 
         return response()->json([
             'success' => true,
@@ -438,6 +448,26 @@ class PostController extends Controller
      * - section_id/category_id are NOT allowed to change (ignored if sent).
      * - Supports multipart with images[] (will append new images).
      */
+    public function delete(Request $request, Post $post)
+    {
+        $user = $request->user();
+        if (! $user) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+
+        if ((int) $post->user_id !== (int) $user->id) {
+            return response()->json(['success' => false, 'message' => 'Forbidden'], 403);
+        }
+
+        $post->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم حذف المنشور بنجاح',
+        ]);
+
+
+    }
     public function update(Request $request, Post $post)
     {
         /** @var \App\Models\User|null $user */

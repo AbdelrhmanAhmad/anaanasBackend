@@ -23,6 +23,7 @@ use App\Services\RealtimeBroadcaster;
 use Filament\Forms\Components\Field;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -32,12 +33,19 @@ class SectionController extends Controller
 {
     public function index(Request $request)
     {
-        $land = $request->get('land');
-        if ($land) {
-            app()->setLocale($land);
-        }
-        $sections = Section::orderBy("sort_order", "asc")->get();
-        return SectionResource::collection($sections);
+        $land = (string) ($request->get('land') ?? '');
+        $cacheKey = 'api:sections:index:v1:'.$land;
+
+        $payload = Cache::remember($cacheKey, 300, function () use ($land) {
+            if ($land !== '') {
+                app()->setLocale($land);
+            }
+            $sections = Section::orderBy('sort_order', 'asc')->get();
+
+            return SectionResource::collection($sections)->response()->getData(true);
+        });
+
+        return response()->json($payload);
     }
 
     public function getPosts(Request $request)
@@ -248,10 +256,6 @@ class SectionController extends Controller
                 ]);
             }
 
-            $criteria = [
-                'post_id' => ['$in' => $candidateIds],
-            ];
-
             $and = [];
             foreach ($attrFilters as $attrId => $optIds) {
                 $and[] = [
@@ -263,18 +267,28 @@ class SectionController extends Controller
                     ],
                 ];
             }
-            if (count($and) > 0) {
-                $criteria['$and'] = $and;
-            }
 
+            // Chunk $in to avoid oversized Mongo queries / BSON limits on large categories.
             $matchedIds = [];
+            $chunkSize = 6000;
             try {
-                $cursor = PostData::raw(function ($collection) use ($criteria) {
-                    return $collection->find($criteria, ['projection' => ['post_id' => 1]]);
-                });
-                foreach ($cursor as $doc) {
-                    if (isset($doc['post_id'])) {
-                        $matchedIds[] = (int) $doc['post_id'];
+                foreach (array_chunk($candidateIds, $chunkSize) as $chunk) {
+                    if (count($chunk) === 0) {
+                        continue;
+                    }
+                    $criteria = [
+                        'post_id' => ['$in' => $chunk],
+                    ];
+                    if (count($and) > 0) {
+                        $criteria['$and'] = $and;
+                    }
+                    $cursor = PostData::raw(function ($collection) use ($criteria) {
+                        return $collection->find($criteria, ['projection' => ['post_id' => 1]]);
+                    });
+                    foreach ($cursor as $doc) {
+                        if (isset($doc['post_id'])) {
+                            $matchedIds[] = (int) $doc['post_id'];
+                        }
                     }
                 }
             } catch (\Throwable $e) {
@@ -339,6 +353,7 @@ class SectionController extends Controller
                 }
             }
 
+            // PostReaction lives in MongoDB: SQL-style GROUP BY is not supported here.
             $allDocs = PostReaction::query()
                 ->whereIn('post_id', $postIds)
                 ->get(['post_id', 'type']);
@@ -625,6 +640,8 @@ class SectionController extends Controller
         }
         $sectionId = $request->section_id;
         $categoryId = $request->category_id;
+if ($sectionId =='20')       return AttributeResource::collection(collect());
+
         $attributes = Attribute::where("section_id", $sectionId)
             ->where("category_id", $categoryId)
             ->whereNull('parent_id')
@@ -633,6 +650,7 @@ class SectionController extends Controller
                     $query->withCount("children");
                 }
             ])->get();
+
 
         return AttributeResource::collection($attributes);
 
