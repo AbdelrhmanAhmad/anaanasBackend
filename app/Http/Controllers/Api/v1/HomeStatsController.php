@@ -8,8 +8,10 @@ use App\Models\Post;
 use App\Models\PostReaction;
 use App\Models\Section;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class HomeStatsController extends Controller
 {
@@ -247,5 +249,150 @@ class HomeStatsController extends Controller
             'success' => true,
             'data' => array_values($scored),
         ];
+    }
+
+    /**
+     * Latest active listings for the home mobile strip (newest first).
+     */
+    public function latestListings(Request $request)
+    {
+        $land = (string) ($request->get('land') ?? '');
+        $countryId = $request->filled('country_id') ? (int) $request->get('country_id') : null;
+        $limit = min(20, max(1, (int) ($request->get('limit') ?? 12)));
+        $userId = Auth::id();
+        $cacheKey = 'api:home:latest-listings:v1:'
+            .($countryId ?? 'all')
+            .':'.($land !== '' ? $land : '_')
+            .':'.$limit
+            .':u'.($userId ? (int) $userId : 0);
+
+        $payload = Cache::remember($cacheKey, 45, function () use ($land, $countryId, $limit) {
+            if ($land !== '') {
+                app()->setLocale($land);
+            }
+
+            return $this->computeLatestListingsPayload($countryId, $limit, $land);
+        });
+
+        return response()->json($payload);
+    }
+
+    /**
+     * @return array{success: true, data: array<int, array<string, mixed>>}
+     */
+    private function computeLatestListingsPayload(?int $countryId, int $limit, string $land = ''): array
+    {
+        $q = Post::query()
+            ->with([
+                'city',
+                'section',
+                'category',
+                'postImages' => fn ($qq) => $qq->orderBy('id'),
+            ]);
+
+        if (Schema::hasColumn('posts', 'post_type')) {
+            $q->where(function ($qq) {
+                $qq->whereNull('post_type')->orWhere('post_type', 'listing');
+            });
+        }
+
+        if (Schema::hasColumn('posts', 'status')) {
+            $q->where('status', 'active');
+        }
+
+        if ($countryId !== null && Schema::hasColumn('posts', 'country_id')) {
+            $q->where('country_id', $countryId);
+        }
+
+        $newestOrderExpr = Schema::hasColumn('posts', 'publish_date')
+            ? 'COALESCE(publish_date, created_at)'
+            : 'created_at';
+        $q->orderByRaw($newestOrderExpr.' desc')->limit($limit);
+
+        $posts = $q->get();
+        if ($posts->isEmpty()) {
+            return ['success' => true, 'data' => []];
+        }
+
+        $postIds = $posts->pluck('id')->map(fn ($id) => (int) $id)->values()->all();
+        $reactionsByMe = [];
+        if (count($postIds) > 0 && Auth::check()) {
+            $myDocs = PostReaction::query()
+                ->whereIn('post_id', $postIds)
+                ->where('user_id', (int) Auth::id())
+                ->get(['post_id', 'type']);
+            foreach ($myDocs as $doc) {
+                $reactionsByMe[(int) $doc->post_id] = (string) $doc->type;
+            }
+        }
+
+        $currency = $land === 'en' ? 'JOD' : 'د.أ';
+        $newSince = now()->subDays(5);
+
+        $data = [];
+        foreach ($posts as $post) {
+            $pid = (int) $post->id;
+            $ref = Schema::hasColumn('posts', 'publish_date') && $post->publish_date
+                ? $post->publish_date
+                : $post->created_at;
+            $isNew = $ref && $ref->gte($newSince);
+
+            $cityName = '';
+            if ($post->city) {
+                $cityArr = $post->city->toArray();
+                $cityName = (string) ($cityArr['name'] ?? '');
+            }
+
+            $price = null;
+            if (Schema::hasColumn('posts', 'price') && $post->price !== null) {
+                $price = (float) $post->price;
+            }
+
+            $data[] = [
+                'id' => $pid,
+                'title' => (string) ($post->title ?? ''),
+                'image_url' => $this->resolvePostListingImageUrl($post),
+                'is_new' => (bool) $isNew,
+                'location' => $cityName !== '' ? $cityName : '—',
+                'price' => $price,
+                'currency' => $currency,
+                'price_suffix' => null,
+                'is_favorited' => isset($reactionsByMe[$pid]),
+            ];
+        }
+
+        return [
+            'success' => true,
+            'data' => $data,
+        ];
+    }
+
+    private function resolvePostListingImageUrl(Post $post): ?string
+    {
+        $post->loadMissing('postImages');
+        $first = $post->postImages->sortBy('id')->first();
+        if ($first && $first->image_full_url) {
+            return $first->image_full_url;
+        }
+
+        $main = $post->main_image ?? null;
+        if (! $main) {
+            return null;
+        }
+        $main = (string) $main;
+        if (preg_match('/^https?:\/\//i', $main)) {
+            return $main;
+        }
+        try {
+            if (str_starts_with($main, 'upload/')
+                || str_starts_with($main, 'posts/')
+                || str_starts_with($main, 'photos/')) {
+                return Storage::disk('s3')->url($main);
+            }
+
+            return Storage::disk('public')->url($main);
+        } catch (\Throwable) {
+            return null;
+        }
     }
 }

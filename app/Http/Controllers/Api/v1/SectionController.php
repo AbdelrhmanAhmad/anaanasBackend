@@ -83,10 +83,14 @@ class SectionController extends Controller
                 "section",
                 "city",
                 "postImages",
-            ])
-            ->where(function ($q) {
+            ]);
+
+        // Older DBs may not have post_type yet — skip filter instead of 500
+        if (Schema::hasColumn('posts', 'post_type')) {
+            $postsQuery->where(function ($q) {
                 $q->whereNull('post_type')->orWhere('post_type', 'listing');
             });
+        }
 
         // Comments are optional (older DBs may not have the table yet)
         if (Schema::hasTable('comments')) {
@@ -316,8 +320,10 @@ class SectionController extends Controller
             $postsQuery->whereIn('id', $matchedIds);
         }
 
-        // Sorting (prioritize publish_date, then created_at)
-        $newestOrderExpr = "COALESCE(publish_date, created_at)";
+        // Sorting (prioritize publish_date when column exists)
+        $newestOrderExpr = Schema::hasColumn('posts', 'publish_date')
+            ? 'COALESCE(publish_date, created_at)'
+            : 'created_at';
         $sort = (string) $request->get('sort', 'newest');
         if ($sort === 'oldest') {
             $postsQuery->orderByRaw($newestOrderExpr . ' asc');

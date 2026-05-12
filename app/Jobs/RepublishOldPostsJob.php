@@ -14,7 +14,7 @@ class RepublishOldPostsJob
 
     public function handle(): void
     {
-        $now = now()->tz("Asia/Amman");
+        $now = now()->tz("UTC");
 
         Country::query()
             ->orderBy('id')

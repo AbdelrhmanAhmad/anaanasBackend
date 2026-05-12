@@ -23,6 +23,7 @@ Route::get('/user', function (Request $request) {
 
 Route::get('home/section-momentum', [HomeStatsController::class, 'sectionMomentum']);
 Route::get('home/trending-posts', [HomeStatsController::class, 'trendingPosts']);
+Route::get('home/latest-listings', [HomeStatsController::class, 'latestListings']);
 Route::get('home/sliders', [HomeSliderController::class, 'index']);
 
 Route::get("sections", [\App\Http\Controllers\Api\v1\SectionController::class, 'index']);
