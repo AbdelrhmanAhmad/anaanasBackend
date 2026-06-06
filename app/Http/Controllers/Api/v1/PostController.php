@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Attribute;
+use App\Rules\NoForbiddenWords;
 use App\Models\AttributeOption;
 use App\Models\Comment;
 use App\Models\Post;
@@ -11,6 +12,7 @@ use App\Models\PostData;
 use App\Models\PostEvent;
 use App\Models\PostReaction;
 use App\Models\PostImages;
+use App\Services\PostModerationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
@@ -55,6 +57,11 @@ class PostController extends Controller
         $land = $request->get('land');
         if ($land) {
             app()->setLocale($land);
+        }
+
+        $moderation = app(PostModerationService::class);
+        if (! $moderation->isPubliclyVisible($post, Auth::id())) {
+            return response()->json(['success' => false, 'message' => 'Not found'], 404);
         }
 
         $post->load([
@@ -115,6 +122,8 @@ class PostController extends Controller
         $payload['reaction_counts'] = $reactionCounts;
         $payload['likes_count'] = (int) array_sum($reactionCounts);
         $payload['post_data'] = $postData ? $postData->toArray() : null;
+        $payload['viewer_is_owner'] = Auth::check() && (int) Auth::id() === (int) $post->user_id;
+        $payload['is_publicly_visible'] = $post->status === Post::STATUS_ACTIVE;
 
         if ($post->user_id == 60936){
             $payload['post_data']['user'] = null ;
@@ -481,8 +490,9 @@ class PostController extends Controller
         }
 
         $validated = $request->validate([
-            'title' => ['nullable', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
+            'title' => ['nullable', 'string', 'max:255', new NoForbiddenWords()],
+            'description' => ['nullable', 'string', new NoForbiddenWords()],
+            'location' => ['nullable', 'string', 'max:500', new NoForbiddenWords()],
             'price' => ['nullable', 'numeric', 'min:0'],
             'country_id' => ['nullable', 'integer'],
             'city_id' => ['nullable', 'integer'],
@@ -956,11 +966,15 @@ class PostController extends Controller
                 $q->whereNull('post_type')->orWhere('post_type', 'listing');
             });
 
+        app(PostModerationService::class)->scopePubliclyVisible($query);
+
         if ($post->category_id) {
             $query->where('category_id', (int) $post->category_id);
         } else {
             $query->where('section_id', (int) $post->section_id);
         }
+
+        $this->applyRelatedPostsCountryFilter($query, $post, $request);
 
         $posts = $query->orderBy('created_at', 'desc')->limit($limit)->get();
 
@@ -997,12 +1011,36 @@ class PostController extends Controller
                 $q->whereNull('post_type')->orWhere('post_type', 'listing');
             });
 
+        app(PostModerationService::class)->scopePubliclyVisible($query);
+
+        $this->applyRelatedPostsCountryFilter($query, $post, $request);
+
         $posts = $query->orderBy('created_at', 'desc')->limit($limit)->get();
 
         return response()->json([
             'success' => true,
             'data' => $this->formatPostCards($posts),
         ]);
+    }
+
+    /**
+     * Restrict related listings to the same country as the ad being viewed.
+     * Falls back to `country_id` query param (portal country) when the post has none.
+     */
+    private function applyRelatedPostsCountryFilter($query, Post $post, Request $request): void
+    {
+        if (! Schema::hasColumn('posts', 'country_id')) {
+            return;
+        }
+
+        $countryId = (int) ($post->country_id ?? 0);
+        if ($countryId <= 0 && $request->filled('country_id')) {
+            $countryId = (int) $request->get('country_id');
+        }
+
+        if ($countryId > 0) {
+            $query->where('country_id', $countryId);
+        }
     }
 
     /**

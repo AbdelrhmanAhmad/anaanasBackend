@@ -1,12 +1,15 @@
 <?php
 
+use App\Http\Controllers\Api\v1\AccountVerificationController;
 use App\Http\Controllers\Api\v1\AuthController;
 use App\Http\Controllers\Api\v1\AuctionController;
 use App\Http\Controllers\Api\v1\HomeSliderController;
 use App\Http\Controllers\Api\v1\HomeStatsController;
 use App\Http\Controllers\Api\v1\ChatController;
 use App\Http\Controllers\Api\v1\CommentController;
+use App\Http\Controllers\Api\v1\ContactController;
 use App\Http\Controllers\Api\v1\CommentReactionController;
+use App\Http\Controllers\Api\v1\EmailVerificationController;
 use App\Http\Controllers\Api\v1\FollowController;
 use App\Http\Controllers\Api\v1\MessageController;
 use App\Http\Controllers\Api\v1\NotificationController;
@@ -35,27 +38,35 @@ Route::get("sections/categories/fet-subfields", [\App\Http\Controllers\Api\v1\Se
 Route::get("countries", [\App\Http\Controllers\Api\v1\SectionController::class, 'countries']);
 Route::get("cities", [\App\Http\Controllers\Api\v1\SectionController::class, 'cities']);
 
+Route::post('contact', [ContactController::class, 'store'])
+    ->middleware('throttle:contact');
+
 // Follow status — public (returns is_following=false for guests)
 Route::get('sections/{section}/follow', [FollowController::class, 'sectionStatus'])->whereNumber('section');
 Route::get('categories/{category}/follow', [FollowController::class, 'categoryStatus'])->whereNumber('category');
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('post/creation-limit', [\App\Http\Controllers\Api\v1\SectionController::class, 'creationLimit']);
+    Route::get('account/verification-status', [AccountVerificationController::class, 'status']);
+    Route::post('account/verification-request', [AccountVerificationController::class, 'store']);
+});
 
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::post("post", [\App\Http\Controllers\Api\v1\SectionController::class, 'post']);
+    Route::post('posts/{post}/comments', [CommentController::class, 'store'])->whereNumber('post');
+    Route::post('posts/{post}/reactions', [PostReactionController::class, 'toggle'])->whereNumber('post');
+    Route::post('comments/{comment}/reactions', [CommentReactionController::class, 'toggle'])->whereNumber('comment');
+    Route::get('posts/{post}/chat', [ChatController::class, 'getOrCreate'])->whereNumber('post');
+    Route::post('chats/{chat}/messages', [MessageController::class, 'store']);
+});
 
-
-
-// إنشاء إعلان — الاستجابة تتضمّن المنشور مع العلاقات (مثل قائمة «إعلاناتي») للعرض الفوري في الواجهة
-Route::post("post", [\App\Http\Controllers\Api\v1\SectionController::class, 'post']);
-}) ;
 Route::get("posts", [\App\Http\Controllers\Api\v1\SectionController::class, 'getPosts']);
 Route::get('auctions', [AuctionController::class, 'index']);
 Route::get('auctions/{post}', [AuctionController::class, 'show'])->whereNumber('post');
 
 Route::get('posts/{post}/comments', [CommentController::class, 'index']);
-Route::middleware(['auth:sanctum'])->post('posts/{post}/comments', [CommentController::class, 'store']);
 Route::get('posts/{post}/reactions', [PostReactionController::class, 'summary']);
-Route::middleware(['auth:sanctum'])->post('posts/{post}/reactions', [PostReactionController::class, 'toggle']);
 Route::post('posts/{post}/events', [PostEventController::class, 'store']);
 Route::get('posts/{post}/similar', [PostController::class, 'similar'])->whereNumber('post');
 Route::get('posts/{post}/more-from-section', [PostController::class, 'moreFromSection'])->whereNumber('post');
@@ -63,7 +74,6 @@ Route::get('posts/{post}', [PostController::class, 'show'])->whereNumber('post')
 
 Route::get('comments/{comment}/replies', [CommentController::class, 'replies']);
 Route::get('comments/{comment}/reactions', [CommentReactionController::class, 'summary']);
-Route::middleware(['auth:sanctum'])->post('comments/{comment}/reactions', [CommentReactionController::class, 'toggle']);
 
 // Chat routes
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -75,8 +85,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('auctions/{post}/statistics', [AuctionController::class, 'statistics'])->whereNumber('post');
     Route::get('auctions/my-posts', [AuctionController::class, 'myAuctions']);
 
-    // Get or create chat for a post
-    Route::get('posts/{post}/chat', [ChatController::class, 'getOrCreate'])->whereNumber('post');
     // List all chats for authenticated user
     Route::get('chats', [ChatController::class, 'index']);
     // Get specific chat
@@ -100,7 +108,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Messages
     Route::get('chats/{chat}/messages', [MessageController::class, 'index']);
-    Route::post('chats/{chat}/messages', [MessageController::class, 'store']);
     Route::post('chats/{chat}/messages/read', [MessageController::class, 'markAsRead']);
 
     // Update post (owner only)
@@ -149,5 +156,15 @@ Route::prefix('auth')->group(function () {
         Route::post('/change-password', [AuthController::class, 'changePassword']);
         Route::post('/request-account-deletion', [AuthController::class, 'requestAccountDeletion']);
         Route::post('/cancel-account-deletion', [AuthController::class, 'cancelAccountDeletion']);
+
+        Route::prefix('email')->group(function () {
+            Route::get('/status', [EmailVerificationController::class, 'status']);
+            Route::post('/send', [EmailVerificationController::class, 'send'])
+                ->middleware('throttle:email-verify-send');
+            Route::post('/verify', [EmailVerificationController::class, 'verify'])
+                ->middleware('throttle:email-verify-attempt');
+            Route::post('/change', [EmailVerificationController::class, 'changeEmail'])
+                ->middleware('throttle:email-verify-send');
+        });
     });
 });

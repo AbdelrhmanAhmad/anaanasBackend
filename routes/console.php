@@ -16,4 +16,8 @@ Schedule::command('accounts:delete-expired')->daily();
 Schedule::call(fn () => app(RepublishOldPostsJob::class)->handle())
     ->everyFifteenMinutes();
 
+// Mirror up to 100 post images from S3 to local storage.
+Schedule::command('posts:sync-images-local --limit=100')
+    ->everyFiveMinutes();
+
 

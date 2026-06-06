@@ -18,11 +18,17 @@ class PostImagesRelationManager extends RelationManager
 {
     protected static string $relationship = 'postImages';
 
+    protected static ?string $title = 'صور الإعلان';
+
+    protected static ?string $modelLabel = 'صورة';
+
+    protected static ?string $pluralModelLabel = 'صور';
+
     public function form(Schema $schema): Schema
     {
         return $schema->components([
             TextInput::make('image')
-                ->label('Image path (S3 / public)')
+                ->label('مسار الصورة (S3 / عام)')
                 ->required()
                 ->columnSpanFull(),
         ]);
@@ -33,16 +39,17 @@ class PostImagesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('image')
             ->columns([
-                TextColumn::make('id')->sortable(),
+                TextColumn::make('id')->label('#')->sortable(),
                 ImageColumn::make('image_full_url')
-                    ->label('Preview')
+                    ->label('معاينة')
                     ->square()
                     ->defaultImageUrl(url('/favicon.ico')),
                 TextColumn::make('image')
-                    ->label('Path')
+                    ->label('المسار')
                     ->limit(40)
                     ->tooltip(fn ($state) => $state),
                 TextColumn::make('created_at')
+                    ->label('تاريخ الإنشاء')
                     ->dateTime()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

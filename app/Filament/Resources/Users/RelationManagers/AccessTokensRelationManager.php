@@ -16,7 +16,11 @@ class AccessTokensRelationManager extends RelationManager
 {
     protected static string $relationship = 'tokens';
 
-    protected static ?string $title = 'API tokens & sessions';
+    protected static ?string $title = 'جلسات API والتوكنات';
+
+    protected static ?string $modelLabel = 'توكن';
+
+    protected static ?string $pluralModelLabel = 'توكنات';
 
     public function form(Schema $schema): Schema
     {
@@ -29,29 +33,31 @@ class AccessTokensRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 TextColumn::make('name')
-                    ->label('Device / name')
+                    ->label('الجهاز / الاسم')
                     ->searchable(),
                 TextColumn::make('abilities')
-                    ->label('Abilities')
+                    ->label('الصلاحيات')
                     ->formatStateUsing(fn ($state) => is_array($state) ? json_encode($state) : (string) $state)
                     ->limit(40)
                     ->tooltip(fn ($state) => is_array($state) ? json_encode($state) : (string) $state),
                 TextColumn::make('last_used_at')
-                    ->label('Last used')
+                    ->label('آخر استخدام')
                     ->dateTime()
                     ->sortable()
                     ->placeholder('—'),
                 TextColumn::make('expires_at')
+                    ->label('تاريخ الانتهاء')
                     ->dateTime()
                     ->placeholder('—')
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
+                    ->label('تاريخ الإنشاء')
                     ->dateTime()
                     ->sortable(),
             ])
             ->recordActions([
                 DeleteAction::make()
-                    ->label('Revoke'),
+                    ->label('إلغاء'),
             ]);
     }
 }

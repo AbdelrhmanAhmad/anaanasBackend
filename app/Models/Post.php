@@ -10,6 +10,23 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Model
 {
+    public const STATUS_ACTIVE = 'active';
+
+    public const STATUS_INACTIVE = 'inactive';
+
+    public const STATUS_PENDING_REVIEW = 'pending_review';
+
+    public const STATUS_REJECTED = 'rejected';
+
+    /** @deprecated Use STATUS_PENDING_REVIEW */
+    public const STATUS_LEGACY_PENDING = 'pending';
+
+    /** @return list<string> */
+    public static function pendingReviewStatuses(): array
+    {
+        return [self::STATUS_PENDING_REVIEW, self::STATUS_LEGACY_PENDING];
+    }
+
     use SoftDeletes;
     protected $connection  = "mysql";
     // public $incrementing = false;
@@ -28,12 +45,16 @@ class Post extends Model
      'status',
      'post_type',
      'main_image',
+     'images_local_synced',
+     'images_local_synced_at',
      'location',
      'publish_date',
     ] ;
 
     protected $casts = [
         'publish_date' => 'datetime',
+        'images_local_synced' => 'boolean',
+        'images_local_synced_at' => 'datetime',
         'location' => 'array',
     ];
 

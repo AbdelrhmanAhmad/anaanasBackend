@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'required' => 'You must verify your email before posting or interacting with listings.',
+    'already_verified' => 'Your email is already verified.',
+    'missing_email' => 'No email is associated with this account.',
+    'send_failed' => 'Could not send the verification code. Please try again later.',
+    'code_sent' => 'A verification code was sent to your email.',
+    'verified' => 'Your email has been verified successfully.',
+    'error' => 'Could not save verification status. Please try again.',
+    'code_expired' => 'This code has expired. Please request a new one.',
+    'invalid_code' => 'The verification code is incorrect.',
+    'too_many_attempts' => 'Too many attempts. Please request a new code.',
+    'same_email' => 'This is already your email address.',
+    'email_taken' => 'This email is already used by another account.',
+    'email_changed_code_sent' => 'Email updated and verification code sent.',
+    'send_rate_limited' => 'Too many send attempts. Please wait and try again.',
+    'verify_rate_limited' => 'Too many verification attempts. Please wait and try again.',
+    'mail_subject' => 'Email verification code — ANANAS',
+    'mail_heading' => 'Verify your email',
+    'mail_intro' => 'Use the code below to verify your email on ANANAS:',
+    'mail_expires' => 'This code expires in :minutes minutes.',
+    'mail_ignore' => 'If you did not request this code, you can ignore this email.',
+    'mail_regards' => 'Regards',
+];

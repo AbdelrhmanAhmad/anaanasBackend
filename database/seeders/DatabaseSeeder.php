@@ -21,5 +21,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // php artisan db:seed --class=ForbiddenWordsSeeder
+        // $this->call(ForbiddenWordsSeeder::class);
     }
 }

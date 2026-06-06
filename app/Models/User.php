@@ -36,6 +36,8 @@ class User extends Authenticatable
         'last_name',
         'username',
         'email',
+        'pending_email',
+        'email_verified_at',
         'mobile',
         'password',
         'bio',
@@ -46,6 +48,9 @@ class User extends Authenticatable
         'old_system_password',
         'try_login_in_new_system',
         'is_blocked',
+        'is_account_verified',
+        'account_verified_at',
+        'auto_approve_posts',
     ];
 
     /**
@@ -70,6 +75,9 @@ class User extends Authenticatable
             'password' => 'hashed',
             'try_login_in_new_system' => 'boolean',
             'is_blocked' => 'boolean',
+            'is_account_verified' => 'boolean',
+            'account_verified_at' => 'datetime',
+            'auto_approve_posts' => 'boolean',
         ];
     }
 
@@ -81,6 +89,21 @@ class User extends Authenticatable
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class, 'user_id');
+    }
+
+    public function verificationRequests(): HasMany
+    {
+        return $this->hasMany(AccountVerificationRequest::class);
+    }
+
+    public function emailVerificationCodes(): HasMany
+    {
+        return $this->hasMany(EmailVerificationCode::class);
+    }
+
+    public function hasVerifiedEmail(): bool
+    {
+        return $this->email_verified_at !== null;
     }
 
     /**

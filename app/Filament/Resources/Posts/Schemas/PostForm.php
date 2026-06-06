@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
+use App\Models\Post;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Callout;
-use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
@@ -22,6 +22,7 @@ class PostForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(1)
             ->components([
                 Callout::make(__('Reference'))
                     ->description(__('MySQL row + Mongo `post_data` / reactions stay in sync with the public API. After saving, verify gallery and attributes in relation tabs on the view page.'))
@@ -29,70 +30,71 @@ class PostForm
                     ->color('info'),
 
                 Tabs::make('postEditor')
-                    ->vertical()
+                    ->columnSpanFull()
                     ->tabs([
                         Tab::make(__('Classification'))
                             ->icon(Heroicon::Squares2x2)
                             ->schema([
-                                Section::make(__('Taxonomy & placement'))
-                                    ->description(__('Owner, hierarchy, geography, and listing type.'))
-                                    ->icon(Heroicon::MapPin)
+                                Section::make(__('Owner & type'))
+                                    ->description(__('Who published this listing and whether it is a standard listing or auction.'))
+                                    ->icon(Heroicon::User)
+                                    ->columns(2)
                                     ->schema([
-                                        Grid::make(2)->schema([
-                                            Select::make('user_id')
-                                                ->relationship('user', 'name')
-                                                ->searchable()
-                                                ->preload()
-                                                ->required(),
+                                        Select::make('user_id')
+                                            ->relationship('user', 'name')
+                                            ->searchable()
+                                            ->preload()
+                                            ->required(),
+                                        Select::make('post_type')
+                                            ->options([
+                                                'listing' => __('Listing'),
+                                                'auction' => __('Auction'),
+                                            ])
+                                            ->native(false)
+                                            ->placeholder('—'),
+                                    ]),
 
-                                            Select::make('post_type')
-                                                ->options([
-                                                    'listing' => 'Listing',
-                                                    'auction' => 'Auction',
-                                                ])
-                                                ->native(false)
-                                                ->placeholder('—'),
-
-                                            Select::make('section_id')
-                                                ->relationship('section', 'name')
-                                                ->searchable()
-                                                ->preload()
-                                                ->required()
-                                                ->live(),
-
-                                            Select::make('category_id')
-                                                ->relationship(
-                                                    'category',
-                                                    'name',
-                                                    fn (Builder $query, Get $get): Builder => $query->when(
-                                                        filled($get('section_id')),
-                                                        fn (Builder $q) => $q->where('section_id', (int) $get('section_id')),
-                                                    ),
-                                                )
-                                                ->searchable()
-                                                ->preload()
-                                                ->required(),
-
-                                            Select::make('country_id')
-                                                ->relationship('country', 'name')
-                                                ->searchable()
-                                                ->preload()
-                                                ->required()
-                                                ->live(),
-
-                                            Select::make('city_id')
-                                                ->relationship(
-                                                    'city',
-                                                    'name',
-                                                    fn (Builder $query, Get $get): Builder => $query->when(
-                                                        filled($get('country_id')),
-                                                        fn (Builder $q) => $q->where('country_id', (int) $get('country_id')),
-                                                    ),
-                                                )
-                                                ->searchable()
-                                                ->preload()
-                                                ->required(),
-                                        ]),
+                                Section::make(__('Taxonomy & geography'))
+                                    ->description(__('Section hierarchy and location shown to buyers.'))
+                                    ->icon(Heroicon::MapPin)
+                                    ->columns(2)
+                                    ->schema([
+                                        Select::make('section_id')
+                                            ->relationship('section', 'name')
+                                            ->searchable()
+                                            ->preload()
+                                            ->required()
+                                            ->live(),
+                                        Select::make('category_id')
+                                            ->relationship(
+                                                'category',
+                                                'name',
+                                                fn (Builder $query, Get $get): Builder => $query->when(
+                                                    filled($get('section_id')),
+                                                    fn (Builder $q) => $q->where('section_id', (int) $get('section_id')),
+                                                ),
+                                            )
+                                            ->searchable()
+                                            ->preload()
+                                            ->required(),
+                                        Select::make('country_id')
+                                            ->relationship('country', 'name')
+                                            ->searchable()
+                                            ->preload()
+                                            ->required()
+                                            ->live(),
+                                        Select::make('city_id')
+                                            ->relationship(
+                                                'city',
+                                                'name',
+                                                fn (Builder $query, Get $get): Builder => $query->when(
+                                                    filled($get('country_id')),
+                                                    fn (Builder $q) => $q->where('country_id', (int) $get('country_id')),
+                                                ),
+                                            )
+                                            ->searchable()
+                                            ->preload()
+                                            ->required(),
                                     ]),
                             ]),
 
@@ -102,31 +104,32 @@ class PostForm
                                 Section::make(__('Listing content'))
                                     ->description(__('Title, description, price, and publication metadata.'))
                                     ->icon(Heroicon::PencilSquare)
+                                    ->columns(3)
                                     ->schema([
-                                        Grid::make(1)->schema([
-                                            TextInput::make('title')
-                                                ->required()
-                                                ->maxLength(255)
-                                                ->columnSpanFull(),
-
-                                            Textarea::make('description')
-                                                ->rows(8)
-                                                ->columnSpanFull(),
-                                        ]),
-
-                                        Grid::make(3)->schema([
-                                            TextInput::make('price')
-                                                ->numeric()
-                                                ->prefix('$'),
-
-                                            TextInput::make('status')
-                                                ->required()
-                                                ->default('active'),
-
-                                            DateTimePicker::make('publish_date')
-                                                ->seconds(false)
-                                                ->native(false),
-                                        ]),
+                                        TextInput::make('title')
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->columnSpanFull(),
+                                        Textarea::make('description')
+                                            ->rows(8)
+                                            ->columnSpanFull(),
+                                        TextInput::make('price')
+                                            ->numeric()
+                                            ->prefix('$'),
+                                        Select::make('status')
+                                            ->options([
+                                                Post::STATUS_ACTIVE => __('Published'),
+                                                Post::STATUS_PENDING_REVIEW => __('Pending review'),
+                                                Post::STATUS_REJECTED => __('Rejected'),
+                                                Post::STATUS_INACTIVE => __('Inactive'),
+                                            ])
+                                            ->required()
+                                            ->default(Post::STATUS_ACTIVE)
+                                            ->native(false),
+                                        DateTimePicker::make('publish_date')
+                                            ->label(__('Publish date'))
+                                            ->seconds(false)
+                                            ->native(false),
                                     ]),
 
                                 Section::make(__('Media & location'))
@@ -136,7 +139,6 @@ class PostForm
                                         TextInput::make('main_image')
                                             ->label(__('Main image path / URL'))
                                             ->columnSpanFull(),
-
                                         KeyValue::make('location')
                                             ->keyLabel(__('Key'))
                                             ->valueLabel(__('Value'))

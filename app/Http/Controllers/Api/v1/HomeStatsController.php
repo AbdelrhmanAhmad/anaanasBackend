@@ -147,8 +147,11 @@ class HomeStatsController extends Controller
     {
         $land = (string) ($request->get('land') ?? '');
         $countryId = $request->filled('country_id') ? (int) $request->get('country_id') : null;
+        if ($countryId !== null && $countryId <= 0) {
+            $countryId = null;
+        }
         $limit = min(20, max(1, (int) ($request->get('limit') ?? 6)));
-        $cacheKey = 'api:home:trending-posts:v1:'.($countryId ?? 'all').':'.($land !== '' ? $land : '_').':'.$limit;
+        $cacheKey = 'api:home:trending-posts:v2:'.($countryId ?? 'none').':'.($land !== '' ? $land : '_').':'.$limit;
 
         $payload = Cache::remember($cacheKey, 90, function () use ($land, $countryId, $limit) {
             if ($land !== '') {
@@ -166,9 +169,19 @@ class HomeStatsController extends Controller
      */
     private function computeTrendingPostsPayload(?int $countryId, int $limit): array
     {
+        if (($countryId ?? 0) <= 0 || ! Schema::hasColumn('posts', 'country_id')) {
+            return ['success' => true, 'data' => []];
+        }
+
         $q = Post::query()
             ->with(['section', 'category'])
-            ->when($countryId !== null && Schema::hasColumn('posts', 'country_id'), fn ($qq) => $qq->where('country_id', $countryId));
+            ->where('country_id', $countryId);
+
+        if (Schema::hasColumn('posts', 'post_type')) {
+            $q->where(function ($qq) {
+                $qq->whereNull('post_type')->orWhere('post_type', 'listing');
+            });
+        }
 
         if (Schema::hasColumn('posts', 'status')) {
             $q->where('status', 'active');

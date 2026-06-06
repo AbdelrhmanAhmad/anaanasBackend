@@ -6,6 +6,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class SetLocaleMiddleware
 {
@@ -20,14 +21,16 @@ class SetLocaleMiddleware
     {
         $locale = $request->header('lang', config('app.locale'));
 
-        //  $locale = $request->lang ?? config('app.locale');
-
+        // Optional Sanctum auth on public API routes (e.g. owner preview of pending posts).
         if ($request->bearerToken()) {
             $user = Auth::guard('sanctum')->user();
-            if (isset($user)) {
+            if (! $user) {
+                $accessToken = PersonalAccessToken::findToken($request->bearerToken());
+                $user = $accessToken?->tokenable;
+            }
+            if ($user) {
                 Auth::setUser($user);
             }
-
         }
 
 

@@ -15,7 +15,6 @@
         "laravel/tinker": "^2.10.1",
         "league/flysystem-aws-s3-v3": "3.0",
         "mongodb/laravel-mongodb": "^5.5",
-        "phiki/phiki": "*",
         "spatie/laravel-translatable": "^6.13.0",
         "spykapps/theme-edinburgh": "^1.0"
     },

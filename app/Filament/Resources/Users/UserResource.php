@@ -27,7 +27,13 @@ class UserResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Platform';
+    protected static ?string $navigationLabel = 'المستخدمون';
+
+    protected static ?string $modelLabel = 'مستخدم';
+
+    protected static ?string $pluralModelLabel = 'المستخدمون';
+
+    protected static \UnitEnum|string|null $navigationGroup = 'المنصة';
 
     protected static ?int $navigationSort = 20;
 

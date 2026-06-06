@@ -8,18 +8,18 @@ use App\Http\Resources\CategoryResource;
 use App\Http\Resources\SectionResource;
 use App\Models\Attribute;
 use App\Models\AttributeOption;
-use App\Models\CategoryFollow;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\Post;
 use App\Models\PostData;
 use App\Models\PostReaction;
-use App\Models\SectionFollow;
 use App\Models\Section;
-use App\Models\UserNotification;
 use App\Models\User;
-use App\Services\RealtimeBroadcaster;
+use App\Rules\NoForbiddenWords;
+use App\Services\AccountVerificationService;
+use App\Services\PostCreationRateLimitService;
+use App\Services\PostModerationService;
 use Filament\Forms\Components\Field;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -91,6 +91,8 @@ class SectionController extends Controller
                 $q->whereNull('post_type')->orWhere('post_type', 'listing');
             });
         }
+
+        app(PostModerationService::class)->scopePubliclyVisible($postsQuery);
 
         // Comments are optional (older DBs may not have the table yet)
         if (Schema::hasTable('comments')) {
@@ -390,6 +392,39 @@ class SectionController extends Controller
     }
     public function post(Request $request )
     {
+        $land = $request->get('land');
+        if ($land) {
+            app()->setLocale($land);
+        }
+
+        /** @var User|null $authUser */
+        $authUser = Auth::user();
+        $verification = app(AccountVerificationService::class)->statusForUser((int) Auth::id());
+
+        if (! $verification['is_account_verified']) {
+            $rateLimit = app(PostCreationRateLimitService::class)->check((int) Auth::id());
+            if (! $rateLimit['can_create']) {
+                return response()->json([
+                    'success' => false,
+                    'error_code' => 'post_rate_limit',
+                    'message' => $rateLimit['message'],
+                    'reason' => $rateLimit['reason'],
+                    'retry_after_seconds' => $rateLimit['retry_after_seconds'],
+                    'posts_in_last_hour' => $rateLimit['posts_in_last_hour'],
+                    'hourly_limit' => $rateLimit['hourly_limit'],
+                    'interval_minutes' => $rateLimit['interval_minutes'],
+                    'next_allowed_at' => $rateLimit['next_allowed_at'],
+                    ...$verification,
+                ], 429);
+            }
+        }
+
+        $request->validate([
+            'title' => ['required', 'string', 'max:255', new NoForbiddenWords()],
+            'description' => ['required', 'string', new NoForbiddenWords()],
+            'location' => ['nullable', 'string', 'max:500', new NoForbiddenWords()],
+        ]);
+
         $content = \request()->all();
         unset($content['images']) ;
         $data = $content;
@@ -404,6 +439,12 @@ class SectionController extends Controller
         }
 //        $data['attributes'] =$content['attributes'] ?? [];
         $data['user_id'] = Auth::id();
+        $moderation = app(PostModerationService::class);
+        $initialStatus = $moderation->initialStatusForUser($authUser);
+        $data['status'] = $initialStatus;
+        if ($initialStatus === Post::STATUS_ACTIVE && Schema::hasColumn('posts', 'publish_date')) {
+            $data['publish_date'] = now();
+        }
         $post = Post::create($data);
         $attr_collect = collect();
         foreach ($data["attributes"] as $attribute) {
@@ -503,91 +544,21 @@ class SectionController extends Controller
         $payload['likes_count'] = (int) ($payload['likes_count'] ?? 0);
         $payload['comments_count'] = 0;
 
-        $this->notifyFollowersAboutNewPost($post, (int) Auth::id());
-
-        // Broadcast to country channel so all clients on the same subdomain
-        // get a realtime "new post added" alert. We only push a minimal pointer
-        // here; the client fetches the full record via /api/posts/{id} so it
-        // gets the same shape used by feed listings.
-        try {
-            // Resolve country ISO code (used as the websocket channel key) lazily
-            // so we never break post creation even if the relation is missing.
-            $countryCode = '';
-            if (! empty($post->country_id)) {
-                $country = Country::find((int) $post->country_id);
-                if ($country) {
-                    $countryCode = strtolower((string) ($country->iso2 ?: $country->iso_code ?: ''));
-                }
-            }
-            $authorName  = $authUser?->name ?? null;
-            RealtimeBroadcaster::publishToCountry($countryCode, 'post.created', [
-                'post_id'      => (int) $post->id,
-                'section_id'   => (int) ($post->section_id ?? 0),
-                'category_id'  => (int) ($post->category_id ?? 0),
-                'country_id'   => (int) ($post->country_id ?? 0),
-                'country_code' => $countryCode ?: null,
-                'title'        => (string) ($post->title ?? ''),
-                'author_id'    => (int) ($post->user_id ?? 0),
-                'author_name'  => $authorName,
-                'created_at'   => optional($post->created_at)->toIso8601String(),
-                'url'          => '/post/' . (int) $post->id,
-            ]);
-        } catch (\Throwable $e) {
-            // best-effort: never let realtime errors break post creation
+        if ($initialStatus === Post::STATUS_ACTIVE) {
+            $moderation->afterPublish($post);
+        } elseif (in_array($initialStatus, Post::pendingReviewStatuses(), true)) {
+            $moderation->notifyAdminsOfPendingReview($post);
         }
 
         return response()->json([
             'success' => true,
             'status' => true,
             'data' => $payload,
-            'message' => 'تم اضافه المنشور بنجاح',
+            'moderation_status' => $initialStatus,
+            'message' => $initialStatus === Post::STATUS_PENDING_REVIEW
+                ? __('post_moderation.submitted_for_review')
+                : 'تم اضافه المنشور بنجاح',
         ]);
-    }
-
-    private function notifyFollowersAboutNewPost(Post $post, int $authorId): void
-    {
-        $sectionFollowerIds = SectionFollow::query()
-            ->where('section_id', (int) $post->section_id)
-            ->pluck('user_id')
-            ->map(fn ($id) => (int) $id)
-            ->all();
-
-        $categoryFollowerIds = [];
-        if ($post->category_id) {
-            $categoryFollowerIds = CategoryFollow::query()
-                ->where('category_id', (int) $post->category_id)
-                ->pluck('user_id')
-                ->map(fn ($id) => (int) $id)
-                ->all();
-        }
-
-        $targets = collect(array_merge($sectionFollowerIds, $categoryFollowerIds))
-            ->filter(fn ($id) => $id > 0 && $id !== $authorId)
-            ->unique()
-            ->values();
-
-        if ($targets->isEmpty()) {
-            return;
-        }
-
-        $sectionName = $post->section?->name ?? 'القسم';
-        $title = (string) $post->title;
-        foreach ($targets as $userId) {
-            UserNotification::create([
-                'user_id' => (int) $userId,
-                'type' => 'follow.new_post',
-                'title_ar' => 'إعلان جديد في قسم تتابعه',
-                'title_en' => 'New listing in a followed section',
-                'body_ar' => $title !== '' ? mb_substr($title, 0, 180) : ('قسم: ' . $sectionName),
-                'body_en' => $title !== '' ? mb_substr($title, 0, 180) : ('Section: ' . $sectionName),
-                'url' => '/post/' . (int) $post->id,
-                'data' => [
-                    'post_id' => (int) $post->id,
-                    'section_id' => (int) $post->section_id,
-                    'category_id' => (int) ($post->category_id ?? 0),
-                ],
-            ]);
-        }
     }
 
     public function cities(Request $request )
@@ -660,6 +631,30 @@ if ($sectionId =='20')       return AttributeResource::collection(collect());
 
         return AttributeResource::collection($attributes);
 
+    }
+
+    public function creationLimit(Request $request)
+    {
+        $land = $request->get('land');
+        if ($land) {
+            app()->setLocale($land);
+        }
+
+        $status = app(PostCreationRateLimitService::class)->check((int) Auth::id());
+        $verification = app(AccountVerificationService::class)->statusForUser((int) Auth::id());
+
+        if ($verification['is_account_verified']) {
+            $status['can_create'] = true;
+            $status['reason'] = null;
+            $status['retry_after_seconds'] = 0;
+            $status['message'] = null;
+            $status['next_allowed_at'] = null;
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => array_merge($status, $verification),
+        ]);
     }
 
 

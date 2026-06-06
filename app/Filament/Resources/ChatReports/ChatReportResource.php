@@ -11,6 +11,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class ChatReportResource extends Resource
 {
@@ -55,6 +57,16 @@ class ChatReportResource extends Resource
     public static function canCreate(): bool
     {
         return false;
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return true;
+    }
+
+    public static function getRecordRouteBindingEloquentQuery(): Builder
+    {
+        return parent::getRecordRouteBindingEloquentQuery();
     }
 
     public static function getNavigationBadge(): ?string

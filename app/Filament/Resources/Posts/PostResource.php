@@ -28,7 +28,13 @@ class PostResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Platform';
+    protected static ?string $navigationLabel = 'الإعلانات';
+
+    protected static ?string $modelLabel = 'إعلان';
+
+    protected static ?string $pluralModelLabel = 'الإعلانات';
+
+    protected static \UnitEnum|string|null $navigationGroup = 'المنصة';
 
     protected static ?int $navigationSort = 10;
 

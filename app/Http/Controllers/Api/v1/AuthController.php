@@ -8,12 +8,15 @@ use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthRegisterRequest;
 use App\Http\Requests\AuthResetPasswordRequest;
 use App\Models\User;
+use App\Rules\NoForbiddenWords;
 use App\Models\UserNotification;
+use App\Services\EmailVerificationService;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -33,6 +36,12 @@ class AuthController extends Controller
             'mobile' => $mobile,
             'password' => $data['password'], // hashed automatically via User cast
         ]);
+
+        try {
+            app(EmailVerificationService::class)->ensureInitialCode($user);
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         Auth::login($user);
         $user = Auth::user();
@@ -58,7 +67,7 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'User registered successfully',
             'data'    => [
-                'user'  => $user,
+                'user'  => $this->serializeUser($user),
                 'token' => $token,
             ],
         ], 201);
@@ -77,6 +86,7 @@ class AuthController extends Controller
         $value = $field === 'email' ? $email : $mobile;
 
         // check old sys login  useing old_system_password
+
         $user = User::where($field, $value)->first();
         if (!$user){
             return response()->json([
@@ -100,7 +110,7 @@ class AuthController extends Controller
                 }else{
                     $user->update([
                         'old_system_password' => null,
-                        'password' => $request->password,
+                        'password' => $data['password'],
                     ]) ;
                     Auth::login($user);
                 }
@@ -165,7 +175,7 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'User logged in successfully',
             'data'    => [
-                'user'  => $user,
+                'user'  => $this->serializeUser($user),
                 'token' => $token,
             ],
         ]);
@@ -255,7 +265,16 @@ class AuthController extends Controller
         $userData = $user->toArray();
         $userData['avatar_url'] = $this->resolveMediaUrl($user->avatar);
         $userData['cover_image_url'] = $this->resolveMediaUrl($user->cover_image);
+        $userData['email_verified'] = $user->hasVerifiedEmail();
+        $userData['pending_email'] = $user->pending_email;
+        $userData['verification_email'] = $user->pending_email ?: $user->email;
+
         return $userData;
+    }
+
+    public function serializeUser(User $user): array
+    {
+        return $this->userToArrayWithMedia($user);
     }
 
     /**
@@ -428,13 +447,15 @@ class AuthController extends Controller
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
         }
 
+        $forbiddenRule = new NoForbiddenWords();
+
         $validated = $request->validate([
-            'first_name' => 'sometimes|string|max:255',
-            'last_name' => 'sometimes|string|max:255',
-            'username' => 'sometimes|string|max:255|unique:users,username,' . $user->id,
-            'email' => 'sometimes|email|max:255|unique:users,email,' . $user->id,
-            'mobile' => 'sometimes|string|max:20',
-            'bio' => 'sometimes|string|max:300',
+            'first_name' => ['sometimes', 'string', 'max:255', $forbiddenRule],
+            'last_name' => ['sometimes', 'string', 'max:255', $forbiddenRule],
+            'username' => ['sometimes', 'string', 'max:255', 'unique:users,username,' . $user->id, $forbiddenRule],
+            'email' => ['sometimes', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'mobile' => ['sometimes', 'string', 'max:20'],
+            'bio' => ['sometimes', 'string', 'max:300', $forbiddenRule],
             'date_of_birth' => 'sometimes|date',
             'avatar' => 'sometimes|string|max:500',
             'cover_image' => 'sometimes|string|max:500',
@@ -486,14 +507,41 @@ class AuthController extends Controller
         // Remove file fields from validated (they're already processed)
         unset($validated['avatar_file'], $validated['cover_image_file']);
 
-        $user->update($validated);
+        $emailVerificationService = app(EmailVerificationService::class);
+        $emailChangeRequested = false;
+
+        if (isset($validated['email'])) {
+            $newEmail = mb_strtolower(trim((string) $validated['email']));
+            $currentEmail = mb_strtolower(trim((string) $user->email));
+
+            if ($newEmail !== $currentEmail) {
+                try {
+                    $emailVerificationService->requestEmailChange($user, $newEmail);
+                    $emailChangeRequested = true;
+                } catch (ValidationException $e) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => collect($e->errors())->flatten()->first(),
+                        'errors' => $e->errors(),
+                    ], 422);
+                }
+            }
+
+            unset($validated['email']);
+        }
+
+        if (! empty($validated)) {
+            $user->update($validated);
+        }
 
         // Refresh user to get updated data and include resolved media URLs
         $user->refresh();
 
         return response()->json([
             'success' => true,
-            'message' => 'Profile updated successfully',
+            'message' => $emailChangeRequested
+                ? __('email_verification.email_changed_code_sent')
+                : 'Profile updated successfully',
             'data' => [
                 'user' => $this->userToArrayWithMedia($user),
             ],

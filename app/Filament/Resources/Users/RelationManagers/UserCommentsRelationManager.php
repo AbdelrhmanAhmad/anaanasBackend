@@ -15,10 +15,17 @@ class UserCommentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'comments';
 
+    protected static ?string $title = 'تعليقات المستخدم';
+
+    protected static ?string $modelLabel = 'تعليق';
+
+    protected static ?string $pluralModelLabel = 'تعليقات';
+
     public function form(Schema $schema): Schema
     {
         return $schema->components([
             Textarea::make('body')
+                ->label('نص التعليق')
                 ->required()
                 ->columnSpanFull(),
         ]);
@@ -29,15 +36,15 @@ class UserCommentsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('body')
             ->columns([
-                TextColumn::make('id')->sortable(),
+                TextColumn::make('id')->label('#')->sortable(),
                 TextColumn::make('post_id')
-                    ->label('Post')
+                    ->label('الإعلان')
                     ->sortable()
                     ->url(fn ($record) => PostResource::getUrl('view', ['record' => $record->post_id]))
                     ->openUrlInNewTab(),
-                TextColumn::make('body')->limit(60)->wrap(),
-                TextColumn::make('parent_id')->placeholder('—'),
-                TextColumn::make('created_at')->dateTime()->sortable(),
+                TextColumn::make('body')->label('التعليق')->limit(60)->wrap(),
+                TextColumn::make('parent_id')->label('التعليق الأب')->placeholder('—'),
+                TextColumn::make('created_at')->label('تاريخ الإنشاء')->dateTime()->sortable(),
             ])
             ->recordActions([
                 EditAction::make(),

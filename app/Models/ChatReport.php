@@ -42,6 +42,16 @@ class ChatReport extends Model
         'snapshot' => 'array',
     ];
 
+    public function getRouteKeyName(): string
+    {
+        return '_id';
+    }
+
+    public function getRouteKey(): string
+    {
+        return (string) ($this->getAttribute('_id') ?? $this->getKey());
+    }
+
     public static function statuses(): array
     {
         return [
@@ -99,18 +109,23 @@ class ChatReport extends Model
     {
         $field = $field ?? $this->getRouteKeyName();
 
-        if (is_string($value) && strlen($value) === 24 && ctype_xdigit($value)) {
+        if (strlen($value) === 24 && ctype_xdigit($value)) {
             try {
                 $oid = new ObjectId($value);
 
                 return $query->where(function ($q) use ($field, $value, $oid) {
-                    $q->where($field, $value)->orWhere($field, $oid);
+                    $q->where($field, $value)
+                        ->orWhere($field, $oid)
+                        ->orWhere('id', $value)
+                        ->orWhere('id', $oid);
                 });
             } catch (\Throwable) {
                 // fall through
             }
         }
 
-        return $query->where($field, $value);
+        return $query->where(function ($q) use ($field, $value) {
+            $q->where($field, $value)->orWhere('id', $value);
+        });
     }
 }
