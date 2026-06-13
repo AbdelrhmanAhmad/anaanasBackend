@@ -19,10 +19,14 @@ class GenerateSitemapCacheCommand extends Command
         $onlyIso = strtolower(trim((string) $this->option('country')));
 
         $countries = Country::query()
-            ->whereNotNull('iso2')
+            ->where(function ($q) {
+                $q->whereNotNull('iso2')->orWhereNotNull('iso_code');
+            })
             ->when($onlyIso !== '', function ($q) use ($onlyIso) {
-                $q->whereRaw('LOWER(iso2) = ?', [$onlyIso])
-                    ->orWhereRaw('LOWER(iso_code) = ?', [$onlyIso]);
+                $q->where(function ($sub) use ($onlyIso) {
+                    $sub->whereRaw('LOWER(iso2) = ?', [$onlyIso])
+                        ->orWhereRaw('LOWER(iso_code) = ?', [$onlyIso]);
+                });
             })
             ->orderBy('id')
             ->get();
@@ -32,6 +36,10 @@ class GenerateSitemapCacheCommand extends Command
 
             return self::FAILURE;
         }
+
+        $disk = Storage::disk('sitemap');
+        $root = storage_path('app/sitemap-cache');
+        $this->info("Writing sitemap cache to: {$root}");
 
         foreach ($countries as $country) {
             $iso2 = strtolower((string) ($country->iso2 ?: $country->iso_code));
@@ -49,13 +57,19 @@ class GenerateSitemapCacheCommand extends Command
                     default => null,
                 };
 
-                Storage::disk('local')->put(
-                    "sitemap-cache/{$iso2}/{$type}.json",
+                $decoded = json_decode($response->getContent(), true);
+                $count = is_array($decoded['data'] ?? null) ? count($decoded['data']) : 0;
+
+                $disk->put(
+                    "{$iso2}/{$type}.json",
                     $response->getContent()
                 );
+
+                $this->line("  - {$type}: {$count} entries");
             }
 
             $page = 1;
+            $totalPosts = 0;
             do {
                 $postsRequest = Request::create('/', 'GET', [
                     'country_iso2' => $iso2,
@@ -64,18 +78,23 @@ class GenerateSitemapCacheCommand extends Command
                 ]);
                 $postsResponse = $controller->posts($postsRequest);
                 $decoded = json_decode($postsResponse->getContent(), true);
-                Storage::disk('local')->put(
-                    "sitemap-cache/{$iso2}/posts-page-{$page}.json",
+                $pageCount = is_array($decoded['data'] ?? null) ? count($decoded['data']) : 0;
+                $totalPosts = (int) ($decoded['meta']['total'] ?? $totalPosts);
+
+                $disk->put(
+                    "{$iso2}/posts-page-{$page}.json",
                     $postsResponse->getContent()
                 );
 
                 $lastPage = (int) ($decoded['meta']['last_page'] ?? 1);
                 $page++;
             } while ($page <= $lastPage);
+
+            $this->line("  - posts: {$totalPosts} total");
         }
 
         $countriesResponse = $controller->countries();
-        Storage::disk('local')->put('sitemap-cache/countries.json', $countriesResponse->getContent());
+        $disk->put('countries.json', $countriesResponse->getContent());
 
         $this->info('Sitemap cache generation complete.');
 

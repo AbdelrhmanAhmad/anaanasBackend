@@ -187,12 +187,11 @@ class SitemapController extends Controller
 
     public function cacheFile(string $type, string $iso2)
     {
-        $path = "sitemap-cache/{$iso2}/{$type}.json";
-        if (! Storage::disk('local')->exists($path)) {
+        if (! Storage::disk('sitemap')->exists("{$iso2}/{$type}.json")) {
             return response()->json(['success' => false, 'message' => 'Not found'], 404);
         }
 
-        return response(Storage::disk('local')->get($path), 200, [
+        return response(Storage::disk('sitemap')->get("{$iso2}/{$type}.json"), 200, [
             'Content-Type' => 'application/json; charset=utf-8',
             'Cache-Control' => 'public, max-age=86400',
         ]);
@@ -210,8 +209,10 @@ class SitemapController extends Controller
         }
 
         return Country::query()
-            ->whereRaw('LOWER(iso2) = ?', [$iso])
-            ->orWhereRaw('LOWER(iso_code) = ?', [$iso])
+            ->where(function ($q) use ($iso) {
+                $q->whereRaw('LOWER(iso2) = ?', [$iso])
+                    ->orWhereRaw('LOWER(iso_code) = ?', [$iso]);
+            })
             ->first();
     }
 }
