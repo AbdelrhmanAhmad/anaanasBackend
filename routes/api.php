@@ -38,6 +38,14 @@ Route::get("sections/categories/fet-subfields", [\App\Http\Controllers\Api\v1\Se
 Route::get("countries", [\App\Http\Controllers\Api\v1\SectionController::class, 'countries']);
 Route::get("cities", [\App\Http\Controllers\Api\v1\SectionController::class, 'cities']);
 
+Route::get('sitemap/countries', [\App\Http\Controllers\Api\v1\SitemapController::class, 'countries']);
+Route::get('sitemap/sections', [\App\Http\Controllers\Api\v1\SitemapController::class, 'sections']);
+Route::get('sitemap/cities', [\App\Http\Controllers\Api\v1\SitemapController::class, 'cities']);
+Route::get('sitemap/posts', [\App\Http\Controllers\Api\v1\SitemapController::class, 'posts']);
+Route::get('sitemap/cache/{type}/{iso2}', [\App\Http\Controllers\Api\v1\SitemapController::class, 'cacheFile'])
+    ->whereIn('type', ['sections', 'cities'])
+    ->where('iso2', '[a-z]{2,3}');
+
 Route::post('contact', [ContactController::class, 'store'])
     ->middleware('throttle:contact');
 

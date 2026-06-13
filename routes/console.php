@@ -20,4 +20,8 @@ Schedule::call(fn () => app(RepublishOldPostsJob::class)->handle())
 Schedule::command('posts:sync-images-local --limit=100')
     ->everyFiveMinutes();
 
+// Warm per-country sitemap JSON caches for the Next.js frontend.
+Schedule::command('sitemap:generate')
+    ->dailyAt('02:30');
+
 
