@@ -8,10 +8,10 @@ use App\Models\Country;
 use App\Models\Post;
 use App\Models\Section;
 use App\Services\PostModerationService;
+use App\Support\SitemapStorage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Storage;
 
 class SitemapController extends Controller
 {
@@ -187,11 +187,11 @@ class SitemapController extends Controller
 
     public function cacheFile(string $type, string $iso2)
     {
-        if (! Storage::disk('sitemap')->exists("{$iso2}/{$type}.json")) {
+        if (! SitemapStorage::disk()->exists("{$iso2}/{$type}.json")) {
             return response()->json(['success' => false, 'message' => 'Not found'], 404);
         }
 
-        return response(Storage::disk('sitemap')->get("{$iso2}/{$type}.json"), 200, [
+        return response(SitemapStorage::disk()->get("{$iso2}/{$type}.json"), 200, [
             'Content-Type' => 'application/json; charset=utf-8',
             'Cache-Control' => 'public, max-age=86400',
         ]);

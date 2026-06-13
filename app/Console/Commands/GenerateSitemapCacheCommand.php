@@ -4,9 +4,9 @@ namespace App\Console\Commands;
 
 use App\Http\Controllers\Api\v1\SitemapController;
 use App\Models\Country;
+use App\Support\SitemapStorage;
 use Illuminate\Console\Command;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class GenerateSitemapCacheCommand extends Command
 {
@@ -37,7 +37,7 @@ class GenerateSitemapCacheCommand extends Command
             return self::FAILURE;
         }
 
-        $disk = Storage::disk('sitemap');
+        $disk = SitemapStorage::disk();
         $root = storage_path('app/sitemap-cache');
         $this->info("Writing sitemap cache to: {$root}");
 
